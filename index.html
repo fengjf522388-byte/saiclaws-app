@@ -404,6 +404,20 @@ select.input { cursor:pointer; }
         </div>
       </div>
 
+      <!-- Subject Progress -->
+      <div class="card mb-3">
+        <div class="card-header"><h3>📈 科目学习进度</h3></div>
+        <div v-for="s in subjectProgress" :key="s.subject" style="padding:.5rem 0;border-bottom:1px solid var(--border);">
+          <div class="flex items-center justify-between mb-1">
+            <span class="font-bold">{{ s.subject }}</span>
+            <span class="text-xs text-muted">{{ s.done }}/{{ s.total }} 章 · {{ s.masteryAvg }}%</span>
+          </div>
+          <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden;">
+            <div :style="{width:s.pct+'%',height:'100%',background:s.color,borderRadius:'4px',transition:'width .5s'}"></div>
+          </div>
+        </div>
+      </div>
+
       <div class="grid-2">
         <!-- Today's Review List -->
         <div class="card">
@@ -943,6 +957,24 @@ const app = createApp({
       return data;
     });
 
+    const subjectProgress = computed(() => {
+      const subjects = ['会计','税法','经济法','审计','财管','战略'];
+      return subjects.map(s => {
+        const kb = allKnowledge.value.filter(k => k.subject === s);
+        const chapters = new Set(kb.map(k => k.chapter_name).filter(Boolean));
+        const diary = allDiary.value.filter(d => d.subject === s && d.mastery_score);
+        const avg = diary.length ? Math.round(diary.reduce((sum,d)=>sum+(d.mastery_score||0),0)/diary.length) : 0;
+        return {
+          subject: s,
+          done: chapters.size,
+          total: Math.max(chapters.size, (s==='会计'?30:s==='审计'?23:s==='财管'?21:s==='税法'?14:s==='经济法'?12:6)),
+          pct: Math.min(100, Math.round(chapters.size / Math.max(1, (s==='会计'?30:s==='审计'?23:s==='财管'?21:s==='税法'?14:s==='经济法'?12:6)) * 100)),
+          masteryAvg: avg,
+          color: 'var(--blue-bright)'
+        };
+      });
+    });
+
     // -- Helpers --
     const formatDate = (d) => {
       if (!d) return '—';
@@ -1267,7 +1299,7 @@ const app = createApp({
       kbFilter, diaryFilter, memoFilter,
       todayString, weekdayString, todayDateStr,
       kbChapters,
-      filteredKnowledge, filteredDiary, filteredMemos,
+      filteredKnowledge, filteredDiary, filteredMemos, subjectProgress,
       formatDate, truncateText, getSubjectTagClass, getLevelTagClass, getScoreStyle, priorityLabel, resetKbFilter,
       memoModal, openMemoModal, saveMemo, toggleMemo, deleteMemo,
       diaryModal, openDiaryModal, saveDiary, deleteDiary,
