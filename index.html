@@ -644,18 +644,24 @@ select.input { cursor:pointer; }
         👋 你好！我是悟空AI助手，专为CPA备考设计。<br>
         我可以帮你解答会计、税法、经济法的问题，分析你的学习薄弱点，提供针对性建议。
       </div>
-      <div class="chat-placeholder">
+      <div class="chat-placeholder" v-if="chatMessages.length <= 1">
         <div>
-          <p style="font-size:2rem;margin-bottom:.5rem;">🔧</p>
-          <p><strong style="color:var(--gold);">悟空AI助手将在Edge Function部署后激活</strong></p>
-          <p class="text-sm mt-1">届时将支持智能问答、知识点讲解、错题分析等功能</p>
-          <p class="text-xs text-muted mt-2">API地址: {{ supabaseUrl }}/functions/v1/chat</p>
+          <p style="font-size:2rem;margin-bottom:.5rem;">🐵</p>
+          <p><strong style="color:var(--gold);">悟空AI助手已激活</strong></p>
+          <p class="text-sm mt-1">我是你的CPA学习伙伴，随便问我会计、税法、经济法的问题！</p>
         </div>
+      </div>
+      <div v-for="(msg, i) in chatMessages.slice(1)" :key="i"
+        :class="'chat-message ' + (msg.role === 'user' ? 'user' : 'bot')"
+        v-html="msg.content.replace(/\n/g,'<br>')">
+      </div>
+      <div v-if="chatLoading" class="chat-message bot" style="color:var(--muted)">
+        🐵 思考中...
       </div>
     </div>
     <div class="chat-input-area">
-      <input class="input" v-model="chatInput" placeholder="输入问题..." @keyup.enter="sendChat" disabled>
-      <button class="btn btn-gold btn-sm" disabled>发送</button>
+      <input class="input" v-model="chatInput" placeholder="问我任何CPA问题..." @keyup.enter="sendChat" :disabled="chatLoading">
+      <button class="btn btn-gold btn-sm" @click="sendChat" :disabled="chatLoading || !chatInput.trim()">发送</button>
     </div>
   </div>
 
@@ -751,6 +757,9 @@ const app = createApp({
     const currentView = ref('dashboard');
     const chatOpen = ref(false);
     const chatInput = ref('');
+    const chatMessages = ref([{ role: 'bot', content: '👋 你好！我是悟空AI助手 🐵<br>专门辅助CPA备考。会计、税法、经济法的问题随便问！' }]);
+    const chatLoading = ref(false);
+    const edgeFunctionUrl = 'https://lwoqjahqneosnummjlbo.supabase.co/functions/v1/ai-chat';
     const supabaseUrl = SUPABASE_URL;
 
     // Toast
@@ -1036,9 +1045,25 @@ const app = createApp({
     };
 
     // -- Chat --
-    const sendChat = () => {
-      // Edge Function not yet deployed — placeholder
+    const sendChat = async () => {
+      const msg = chatInput.value.trim();
+      if (!msg) return;
+      chatMessages.value.push({ role: 'user', content: msg });
       chatInput.value = '';
+      chatLoading.value = true;
+      try {
+        const history = chatMessages.value.slice(1, -1).map(m => ({ role: m.role === 'bot' ? 'assistant' : 'user', content: m.content.replace(/<br>/g,'\n') }));
+        const res = await fetch(edgeFunctionUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: msg, history })
+        });
+        const data = await res.json();
+        chatMessages.value.push({ role: 'bot', content: data.reply || data.error || '🐵 悟空暂时无法回复，请稍后再试' });
+      } catch (e) {
+        chatMessages.value.push({ role: 'bot', content: '🐵 连接失败，请检查Edge Function是否已部署' });
+      }
+      chatLoading.value = false;
     };
 
     // -- View switching --
