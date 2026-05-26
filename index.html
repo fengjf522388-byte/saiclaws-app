@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAIClaws 2.0 — CPA智能学习平台</title>
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --navy: #0a1628;
+  --navy-light: #111d35;
+  --navy-hover: #162240;
+  --blue: #2563eb;
+  --blue-bright: #3b82f6;
+  --blue-dim: rgba(37,99,235,0.12);
+  --gold: #f59e0b;
+  --gold-dim: rgba(245,158,11,0.12);
+  --teal: #0891b2;
+  --teal-dim: rgba(8,145,178,0.1);
+  --red: #ef4444;
+  --red-dim: rgba(239,68,68,0.1);
+  --green: #10b981;
+  --green-dim: rgba(16,185,129,0.12);
+  --text: #e2e8f0;
+  --text-heading: #f8fafc;
+  --muted: #94a3b8;
+  --muted-dark: #64748b;
+  --bg: #0a1628;
+  --bg-card: #111d35;
+  --border: rgba(148,163,184,0.1);
+  --border-light: rgba(148,163,184,0.15);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.3);
+  --font: 'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans SC','Segoe UI','Inter',system-ui,-apple-system,sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: var(--font); line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:rgba(148,163,184,0.15); border-radius:3px; }
+::-webkit-scrollbar-thumb:hover { background:rgba(148,163,184,0.25); }
+
+/* Layout */
+#app { min-height:100vh; display:flex; flex-direction:column; }
+
+/* Nav */
+.nav {
+  position:sticky; top:0; z-index:100;
+  background:rgba(10,22,40,0.92); backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.nav-inner {
+  max-width:1200px; margin:0 auto; padding:0 1.5rem;
+  display:flex; align-items:center; justify-content:space-between; height:60px;
+}
+.nav-logo { font-size:1.25rem; font-weight:800; color:var(--blue-bright); display:flex; align-items:center; gap:.5rem; letter-spacing:-0.02em; }
+.nav-logo .dot { color:var(--gold); }
+.nav-logo span { color:var(--muted); font-weight:400; font-size:.85rem; }
+.nav-tabs { display:flex; gap:.25rem; list-style:none; flex-wrap:wrap; }
+.nav-tab {
+  padding:.4rem .85rem; border-radius:6px;
+  font-size:.85rem; color:var(--muted); cursor:pointer;
+  transition:color .2s,background .2s; border:none; background:none; font-family:inherit;
+}
+.nav-tab:hover, .nav-tab.active { color:var(--text); background:rgba(255,255,255,0.05); }
+.nav-tab.has-badge { position:relative; }
+.nav-tab .badge-dot {
+  position:absolute; top:6px; right:6px;
+  width:7px; height:7px; border-radius:50%; background:var(--gold);
+}
+
+/* Main */
+.main { flex:1; max-width:1200px; width:100%; margin:0 auto; padding:1.5rem; }
+
+/* Cards */
+.card {
+  background:var(--bg-card); border:1px solid var(--border);
+  border-radius:var(--radius); padding:1.5rem;
+  transition:border-color .2s,transform .2s;
+}
+.card:hover { border-color:var(--border-light); }
+.card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; flex-wrap:wrap; gap:.5rem; }
+.card-header h2 { font-size:1.3rem; font-weight:700; color:var(--text-heading); letter-spacing:-0.02em; }
+.card-header h3 { font-size:1.1rem; font-weight:700; color:var(--text-heading); }
+
+/* Buttons */
+.btn {
+  padding:.55rem 1.2rem; border-radius:var(--radius-sm);
+  font-weight:600; font-size:.85rem; cursor:pointer; border:none;
+  transition:transform .15s,box-shadow .15s,background .15s;
+  display:inline-flex; align-items:center; gap:.4rem; font-family:inherit;
+}
+.btn:hover { transform:translateY(-1px); }
+.btn:active { transform:translateY(0); }
+.btn-primary { background:var(--blue); color:#fff; }
+.btn-primary:hover { background:var(--blue-bright); box-shadow:0 4px 16px rgba(37,99,235,0.3); }
+.btn-outline { background:transparent; border:1px solid var(--border-light); color:var(--text); }
+.btn-outline:hover { border-color:var(--blue-bright); color:var(--blue-bright); }
+.btn-gold { background:linear-gradient(135deg,var(--gold),#d97706); color:#1a1a2e; font-weight:700; }
+.btn-gold:hover { box-shadow:0 4px 16px rgba(245,158,11,0.35); }
+.btn-sm { padding:.35rem .8rem; font-size:.78rem; }
+.btn-danger { background:var(--red); color:#fff; }
+.btn-danger:hover { background:#dc2626; }
+.btn-success { background:var(--green); color:#fff; }
+.btn-success:hover { background:#059669; }
+.btn-ghost { background:transparent; color:var(--muted); }
+.btn-ghost:hover { color:var(--text); background:rgba(255,255,255,0.05); }
+.btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+
+/* Inputs */
+.input {
+  padding:.6rem 1rem; border-radius:var(--radius-sm);
+  border:1px solid var(--border); background:var(--bg);
+  color:var(--text); font-size:.88rem; font-family:inherit;
+  transition:border-color .2s; width:100%;
+}
+.input:focus { outline:2px solid var(--blue); outline-offset:-1px; border-color:transparent; }
+textarea.input { resize:vertical; min-height:80px; }
+select.input { cursor:pointer; }
+
+/* Tags/Badges */
+.tag {
+  display:inline-block; padding:.15rem .6rem; border-radius:4px;
+  font-size:.7rem; font-weight:700; letter-spacing:.05em;
+}
+.tag-blue { background:var(--blue-dim); color:var(--blue-bright); }
+.tag-gold { background:var(--gold-dim); color:var(--gold); }
+.tag-teal { background:var(--teal-dim); color:var(--teal); }
+.tag-green { background:var(--green-dim); color:var(--green); }
+.tag-red { background:var(--red-dim); color:var(--red); }
+
+/* Stats */
+.stats-row { display:flex; gap:1.5rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+.stat-card {
+  flex:1; min-width:140px; background:var(--bg-card);
+  border:1px solid var(--border); border-radius:var(--radius); padding:1.2rem 1.5rem;
+  text-align:center;
+}
+.stat-num { font-size:2rem; font-weight:800; color:var(--blue-bright); line-height:1.2; }
+.stat-label { color:var(--muted); font-size:.8rem; margin-top:.25rem; }
+
+/* Grids */
+.grid-2 { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:1.25rem; }
+.grid-3 { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1.25rem; }
+
+/* Spacing */
+.mt-1 { margin-top:.5rem; }
+.mt-2 { margin-top:1rem; }
+.mt-3 { margin-top:1.5rem; }
+.mb-1 { margin-bottom:.5rem; }
+.mb-2 { margin-bottom:1rem; }
+.mb-3 { margin-bottom:1.5rem; }
+.gap-1 { gap:.5rem; }
+.gap-2 { gap:1rem; }
+.flex { display:flex; }
+.flex-wrap { flex-wrap:wrap; }
+.flex-col { flex-direction:column; }
+.items-center { align-items:center; }
+.justify-between { justify-content:space-between; }
+.text-center { text-align:center; }
+.text-muted { color:var(--muted); }
+.text-sm { font-size:.85rem; }
+.text-xs { font-size:.75rem; }
+.text-heading { color:var(--text-heading); }
+.text-gold { color:var(--gold); }
+.text-blue { color:var(--blue-bright); }
+.text-green { color:var(--green); }
+.text-red { color:var(--red); }
+.font-bold { font-weight:700; }
+.w-full { width:100%; }
+
+/* Memo item */
+.memo-item {
+  display:flex; align-items:flex-start; gap:.8rem;
+  padding:.8rem 0; border-bottom:1px solid var(--border);
+}
+.memo-item:last-child { border-bottom:none; }
+.memo-check {
+  width:22px; height:22px; border-radius:6px;
+  border:2px solid var(--border-light); flex-shrink:0;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:all .2s; margin-top:2px;
+}
+.memo-check.done { background:var(--green); border-color:var(--green); }
+.memo-check.done::after { content:'✓'; color:#fff; font-size:12px; font-weight:700; }
+.memo-content { flex:1; }
+.memo-text { font-size:.9rem; }
+.memo-text.done { text-decoration:line-through; color:var(--muted-dark); }
+.memo-priority { font-size:.68rem; font-weight:700; }
+.priority-high { color:var(--red); }
+.priority-medium { color:var(--gold); }
+.priority-low { color:var(--muted); }
+
+/* Knowledge cards */
+.kb-card {
+  background:var(--bg-card); border:1px solid var(--border);
+  border-radius:var(--radius); padding:1.3rem;
+  transition:border-color .2s,transform .2s;
+}
+.kb-card:hover { border-color:var(--border-light); transform:translateY(-2px); }
+.kb-subject { font-size:.75rem; font-weight:700; color:var(--gold); text-transform:uppercase; letter-spacing:.05em; margin-bottom:.3rem; }
+.kb-chapter { font-size:.75rem; color:var(--muted-dark); margin-bottom:.5rem; }
+.kb-title { font-size:1rem; font-weight:600; color:var(--text-heading); margin-bottom:.5rem; }
+.kb-meta { font-size:.78rem; color:var(--muted); display:flex; gap:.8rem; flex-wrap:wrap; align-items:center; }
+
+/* Diary timeline */
+.timeline { position:relative; padding-left:2rem; }
+.timeline::before {
+  content:''; position:absolute; left:8px; top:8px; bottom:8px;
+  width:2px; background:var(--border);
+}
+.timeline-item { position:relative; margin-bottom:1.5rem; }
+.timeline-dot {
+  position:absolute; left:-2rem; top:4px;
+  width:18px; height:18px; border-radius:50%; background:var(--blue);
+  border:3px solid var(--bg);
+}
+.timeline-date { font-size:.75rem; color:var(--muted-dark); margin-bottom:.3rem; }
+.timeline-card {
+  background:var(--bg-card); border:1px solid var(--border);
+  border-radius:var(--radius); padding:1.2rem 1.5rem;
+}
+.timeline-card h3 { font-size:1rem; font-weight:600; color:var(--text-heading); margin-bottom:.3rem; }
+.timeline-card p { font-size:.85rem; color:var(--muted); line-height:1.6; margin-bottom:.4rem; }
+.score-badge {
+  display:inline-flex; align-items:center; gap:.3rem;
+  padding:.2rem .6rem; border-radius:4px; font-size:.78rem; font-weight:700;
+}
+
+/* Modal */
+.modal-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.6);
+  display:flex; align-items:center; justify-content:center;
+  z-index:200; backdrop-filter:blur(4px);
+}
+.modal {
+  background:var(--bg-card); border:1px solid var(--border);
+  border-radius:var(--radius); width:90%; max-width:560px;
+  max-height:85vh; overflow-y:auto; padding:1.8rem;
+}
+.modal h2 { font-size:1.25rem; font-weight:700; color:var(--text-heading); margin-bottom:1.2rem; }
+.modal .form-group { margin-bottom:1rem; }
+.modal .form-group label { display:block; font-size:.82rem; color:var(--muted); margin-bottom:.3rem; font-weight:600; }
+.modal-actions { display:flex; gap:.8rem; justify-content:flex-end; margin-top:1.5rem; }
+
+/* AI Chat */
+.chat-fab {
+  position:fixed; bottom:1.5rem; right:1.5rem; z-index:150;
+  width:56px; height:56px; border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),#d97706);
+  border:none; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 20px rgba(245,158,11,0.4);
+  transition:transform .2s,box-shadow .2s; font-size:1.5rem;
+}
+.chat-fab:hover { transform:scale(1.1); box-shadow:0 6px 28px rgba(245,158,11,0.5); }
+.chat-panel {
+  position:fixed; bottom:5rem; right:1.5rem; z-index:150;
+  width:380px; max-width:90vw; height:520px; max-height:70vh;
+  background:var(--bg-card); border:1px solid var(--border);
+  border-radius:var(--radius); display:flex; flex-direction:column;
+  box-shadow:0 8px 40px rgba(0,0,0,0.5);
+}
+.chat-header {
+  padding:1rem 1.2rem; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.chat-header h3 { font-size:1rem; font-weight:700; color:var(--gold); }
+.chat-body {
+  flex:1; overflow-y:auto; padding:1rem 1.2rem;
+  display:flex; flex-direction:column; gap:.8rem;
+}
+.chat-message {
+  padding:.7rem 1rem; border-radius:var(--radius-sm); font-size:.85rem; line-height:1.5;
+  max-width:90%;
+}
+.chat-message.bot { background:var(--blue-dim); color:var(--text); align-self:flex-start; border:1px solid rgba(37,99,235,0.15); }
+.chat-message.user { background:var(--blue); color:#fff; align-self:flex-end; }
+.chat-input-area {
+  padding:.8rem 1.2rem; border-top:1px solid var(--border);
+  display:flex; gap:.5rem;
+}
+.chat-input-area input { flex:1; }
+.chat-placeholder {
+  flex:1; display:flex; align-items:center; justify-content:center;
+  text-align:center; padding:2rem;
+}
+.chat-placeholder p { color:var(--muted); font-size:.85rem; line-height:1.6; }
+
+/* Loading */
+.loading { text-align:center; padding:2rem; color:var(--muted); }
+.spinner {
+  display:inline-block; width:24px; height:24px;
+  border:2px solid var(--border); border-top-color:var(--blue-bright);
+  border-radius:50%; animation:spin .6s linear infinite;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* Empty state */
+.empty-state { text-align:center; padding:2rem; color:var(--muted-dark); }
+.empty-state .icon { font-size:2.5rem; margin-bottom:.8rem; opacity:.4; }
+
+/* Toast */
+.toast {
+  position:fixed; top:1rem; right:1rem; z-index:300;
+  padding:.8rem 1.5rem; border-radius:var(--radius-sm);
+  font-size:.88rem; font-weight:600; color:#fff;
+  animation:slideIn .3s ease;
+}
+.toast-success { background:var(--green); }
+.toast-error { background:var(--red); }
+@keyframes slideIn { from { transform:translateX(100%); opacity:0; } to { transform:translateX(0); opacity:1; } }
+
+/* Responsive */
+@media (max-width:768px) {
+  .nav-inner { flex-direction:column; height:auto; padding:1rem; gap:.8rem; }
+  .nav-tabs { justify-content:center; }
+  .grid-2 { grid-template-columns:1fr; }
+  .grid-3 { grid-template-columns:1fr 1fr; }
+  .stats-row { flex-direction:column; }
+  .chat-panel { width:calc(100vw - 2rem); right:1rem; bottom:5rem; }
+}
+@media (max-width:480px) {
+  .grid-3 { grid-template-columns:1fr; }
+  .nav-tab { font-size:.78rem; padding:.3rem .5rem; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- Toast -->
+  <div v-if="toast.show" :class="'toast toast-' + toast.type">{{ toast.message }}</div>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        SAIClaws<span class="dot">·</span><span>CPA智能学习平台</span>
+      </div>
+      <ul class="nav-tabs">
+        <li>
+          <button class="nav-tab" :class="{ active: currentView === 'dashboard' }" @click="switchView('dashboard')">📊 工作台</button>
+        </li>
+        <li>
+          <button class="nav-tab" :class="{ active: currentView === 'knowledge' }" @click="switchView('knowledge')">📚 知识库</button>
+        </li>
+        <li>
+          <button class="nav-tab" :class="{ active: currentView === 'diary' }" @click="switchView('diary')">📝 学习日记</button>
+        </li>
+        <li>
+          <button class="nav-tab" :class="{ active: currentView === 'memos' }" @click="switchView('memos')">📋 备忘录</button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- ============ DASHBOARD ============ -->
+    <div v-if="currentView === 'dashboard'">
+      <!-- Date & Greeting -->
+      <div class="card mb-3">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+          <div>
+            <h2 style="margin-bottom:.3rem;">{{ todayString }}</h2>
+            <p class="text-muted text-sm">{{ weekdayString }} · 加油，每一天都是通往CPA的阶梯 ✨</p>
+          </div>
+          <div style="display:flex;gap:.5rem;">
+            <button class="btn btn-outline btn-sm" @click="refreshDashboard">🔄 刷新</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-num">{{ stats.totalKnowledge }}</div>
+          <div class="stat-label">知识库条目</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">{{ stats.totalDiary }}</div>
+          <div class="stat-label">学习日记</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">{{ stats.todayMemos }}</div>
+          <div class="stat-label">今日备忘录</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">{{ stats.todayReviews }}</div>
+          <div class="stat-label">今日复习计划</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">{{ stats.avgMastery }}%</div>
+          <div class="stat-label">平均掌握度</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Today's Review List -->
+        <div class="card">
+          <div class="card-header">
+            <h3>📅 今日复习清单</h3>
+          </div>
+          <div v-if="loading.reviews" class="loading"><div class="spinner"></div></div>
+          <div v-else-if="todayReviews.length === 0" class="empty-state">
+            <div class="icon">🎉</div>
+            <p>今天没有待复习内容，太棒了！</p>
+          </div>
+          <div v-else>
+            <div v-for="r in todayReviews" :key="r.id" style="padding:.6rem 0;border-bottom:1px solid var(--border);font-size:.88rem;">
+              <div class="flex items-center justify-between">
+                <span class="font-bold" style="color:var(--text);">{{ r.topic_name || r.knowledge_point_id }}</span>
+                <span class="tag" :class="getSubjectTagClass(r.subject)">{{ r.subject }}</span>
+              </div>
+              <div class="text-xs text-muted mt-1">
+                已复习 {{ r.review_count || 0 }} 次 · 下次: {{ formatDate(r.next_review_date) }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Today's Memos -->
+        <div class="card">
+          <div class="card-header">
+            <h3>📋 今日备忘录</h3>
+            <button class="btn btn-primary btn-sm" @click="openMemoModal()">+ 添加</button>
+          </div>
+          <div v-if="loading.memos" class="loading"><div class="spinner"></div></div>
+          <div v-else-if="todayMemos.length === 0" class="empty-state">
+            <div class="icon">📝</div>
+            <p>今天还没有备忘录</p>
+          </div>
+          <div v-else>
+            <div v-for="m in todayMemos" :key="m.id" class="memo-item">
+              <div class="memo-check" :class="{ done: m.is_done }" @click="toggleMemo(m)"></div>
+              <div class="memo-content">
+                <div class="memo-text" :class="{ done: m.is_done }">{{ m.content }}</div>
+                <div v-if="m.priority" class="memo-priority mt-1" :class="'priority-' + m.priority">⚑ {{ priorityLabel(m.priority) }}</div>
+              </div>
+              <button class="btn btn-ghost btn-sm" @click="deleteMemo(m.id)" title="删除">🗑</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Diary Entries -->
+      <div class="card mt-3">
+        <div class="card-header">
+          <h3>📝 最近学习日记</h3>
+          <button class="btn btn-outline btn-sm" @click="switchView('diary')">查看全部 →</button>
+        </div>
+        <div v-if="loading.recentDiary" class="loading"><div class="spinner"></div></div>
+        <div v-else-if="recentDiary.length === 0" class="empty-state">
+          <div class="icon">📖</div>
+          <p>还没有学习日记，开始记录吧！</p>
+        </div>
+        <div v-else style="display:flex;flex-direction:column;gap:.8rem;">
+          <div v-for="d in recentDiary" :key="d.id" style="display:flex;gap:1rem;align-items:flex-start;padding:.5rem 0;border-bottom:1px solid var(--border);">
+            <div class="text-xs text-muted" style="min-width:80px;padding-top:3px;">{{ formatDate(d.entry_date) }}</div>
+            <div style="flex:1;">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="tag" :class="getSubjectTagClass(d.subject)">{{ d.subject }}</span>
+                <span v-if="d.mastery_score" class="score-badge" :style="getScoreStyle(d.mastery_score)">🏆 {{ d.mastery_score }}%</span>
+              </div>
+              <p class="text-sm text-muted" style="margin:0;">{{ truncateText(d.ai_summary || d.oral_transcript, 120) }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ KNOWLEDGE BASE ============ -->
+    <div v-if="currentView === 'knowledge'">
+      <div class="card mb-3">
+        <div class="card-header">
+          <h2>📚 知识库</h2>
+          <span class="text-muted text-sm">共 {{ filteredKnowledge.length }} 个知识点</span>
+        </div>
+        <div class="flex gap-2 flex-wrap items-center">
+          <select class="input" style="max-width:160px;" v-model="kbFilter.subject">
+            <option value="">全部科目</option>
+            <option value="会计">会计</option>
+            <option value="税法">税法</option>
+            <option value="经济法">经济法</option>
+          </select>
+          <select class="input" style="max-width:200px;" v-model="kbFilter.chapter">
+            <option value="">全部章节</option>
+            <option v-for="ch in kbChapters" :key="ch" :value="ch">{{ ch }}</option>
+          </select>
+          <select class="input" style="max-width:140px;" v-model="kbFilter.level">
+            <option value="">全部要求</option>
+            <option value="了解">了解</option>
+            <option value="理解">理解</option>
+            <option value="掌握">掌握</option>
+          </select>
+          <input class="input" style="max-width:240px;" v-model="kbFilter.search" placeholder="🔍 搜索知识点...">
+          <button class="btn btn-ghost btn-sm" @click="resetKbFilter">清除筛选</button>
+        </div>
+      </div>
+
+      <div v-if="loading.knowledge" class="loading"><div class="spinner"></div><p class="mt-1">加载知识库...</p></div>
+      <div v-else-if="filteredKnowledge.length === 0" class="empty-state">
+        <div class="icon">📭</div>
+        <p>没有找到匹配的知识点</p>
+      </div>
+      <div v-else class="grid-3">
+        <div v-for="k in filteredKnowledge" :key="k.id" class="kb-card">
+          <div class="kb-subject">{{ k.subject }}</div>
+          <div class="kb-chapter">第{{ k.chapter_no }}章 · {{ k.chapter_name }}</div>
+          <div class="kb-title">{{ k.topic_name }}</div>
+          <p class="text-sm text-muted mb-2" style="line-height:1.5;">{{ truncateText(k.content, 100) }}</p>
+          <div class="kb-meta">
+            <span class="tag" :class="getLevelTagClass(k.syllabus_level)">{{ k.syllabus_level || '了解' }}</span>
+            <span v-if="k.key_points" class="text-xs text-gold">🔑 {{ k.key_points }}</span>
+            <span v-if="k.exam_years" class="text-xs text-muted">📅 {{ k.exam_years }}</span>
+          </div>
+          <div v-if="k.common_mistakes" class="mt-2 text-xs" style="color:var(--red);">
+            ⚠️ 易错: {{ truncateText(k.common_mistakes, 60) }}
+          </div>
+          <details style="margin-top:.8rem;">
+            <summary style="cursor:pointer;color:var(--blue-bright);font-size:.8rem;font-weight:600;">查看详情</summary>
+            <div class="mt-2 text-sm" style="color:var(--muted);line-height:1.7;white-space:pre-wrap;">{{ k.content }}</div>
+            <div v-if="k.key_points" class="mt-2 text-sm"><strong style="color:var(--gold);">重点：</strong>{{ k.key_points }}</div>
+            <div v-if="k.common_mistakes" class="mt-2 text-sm"><strong style="color:var(--red);">常见错误：</strong>{{ k.common_mistakes }}</div>
+            <div v-if="k.exam_years" class="mt-2 text-sm"><strong style="color:var(--muted);">历年考题：</strong>{{ k.exam_years }}</div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ STUDY DIARY ============ -->
+    <div v-if="currentView === 'diary'">
+      <div class="card mb-3">
+        <div class="card-header">
+          <h2>📝 学习日记</h2>
+          <button class="btn btn-primary" @click="openDiaryModal()">✍️ 写日记</button>
+        </div>
+        <div class="flex gap-2 flex-wrap items-center">
+          <select class="input" style="max-width:160px;" v-model="diaryFilter.subject">
+            <option value="">全部科目</option>
+            <option value="会计">会计</option>
+            <option value="税法">税法</option>
+            <option value="经济法">经济法</option>
+          </select>
+          <input class="input" style="max-width:200px;" v-model="diaryFilter.search" placeholder="🔍 搜索日记...">
+        </div>
+      </div>
+
+      <div v-if="loading.diary" class="loading"><div class="spinner"></div><p class="mt-1">加载日记...</p></div>
+      <div v-else-if="filteredDiary.length === 0" class="empty-state">
+        <div class="icon">📖</div>
+        <p>还没有学习日记</p>
+        <button class="btn btn-primary mt-2" @click="openDiaryModal()">✍️ 写第一篇日记</button>
+      </div>
+      <div v-else class="timeline">
+        <div v-for="d in filteredDiary" :key="d.id" class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">{{ formatDate(d.entry_date) }}</div>
+          <div class="timeline-card">
+            <div class="flex items-center justify-between mb-2 flex-wrap gap-1">
+              <h3>{{ d.chapter_name || '未分类' }}</h3>
+              <div class="flex gap-1 items-center">
+                <span class="tag" :class="getSubjectTagClass(d.subject)">{{ d.subject }}</span>
+                <span v-if="d.mastery_score" class="score-badge" :style="getScoreStyle(d.mastery_score)">
+                  🏆 {{ d.mastery_score }}%
+                </span>
+                <span v-if="d.is_published" class="tag tag-green">已发布</span>
+              </div>
+            </div>
+            <p v-if="d.oral_transcript" class="mt-1"><strong style="color:var(--text);">口述记录：</strong>{{ d.oral_transcript }}</p>
+            <p v-if="d.ai_summary" class="mt-1"><strong style="color:var(--blue-bright);">AI总结：</strong>{{ d.ai_summary }}</p>
+            <p v-if="d.missing_points" class="mt-1"><strong style="color:var(--red);">薄弱环节：</strong>{{ d.missing_points }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ MEMOS ============ -->
+    <div v-if="currentView === 'memos'">
+      <div class="card mb-3">
+        <div class="card-header">
+          <h2>📋 备忘录管理</h2>
+          <div class="flex gap-2">
+            <button class="btn btn-primary" @click="openMemoModal()">+ 新建备忘录</button>
+          </div>
+        </div>
+        <div class="flex gap-2 flex-wrap items-center">
+          <select class="input" style="max-width:140px;" v-model="memoFilter.status">
+            <option value="all">全部状态</option>
+            <option value="pending">待完成</option>
+            <option value="done">已完成</option>
+          </select>
+          <select class="input" style="max-width:140px;" v-model="memoFilter.priority">
+            <option value="">全部优先级</option>
+            <option value="high">高</option>
+            <option value="medium">中</option>
+            <option value="low">低</option>
+          </select>
+          <input class="input" style="max-width:200px;" v-model="memoFilter.search" placeholder="🔍 搜索备忘录...">
+          <span class="text-sm text-muted">共 {{ filteredMemos.length }} 条</span>
+        </div>
+      </div>
+
+      <div v-if="loading.allMemos" class="loading"><div class="spinner"></div></div>
+      <div v-else-if="filteredMemos.length === 0" class="card empty-state">
+        <div class="icon">📝</div>
+        <p>没有备忘录</p>
+      </div>
+      <div v-else class="card">
+        <div v-for="m in filteredMemos" :key="m.id" class="memo-item">
+          <div class="memo-check" :class="{ done: m.is_done }" @click="toggleMemo(m)"></div>
+          <div class="memo-content">
+            <div class="memo-text" :class="{ done: m.is_done }">{{ m.content }}</div>
+            <div class="flex gap-2 mt-1 items-center">
+              <span v-if="m.priority" class="memo-priority" :class="'priority-' + m.priority">⚑ {{ priorityLabel(m.priority) }}</span>
+              <span class="text-xs text-muted">{{ formatDate(m.memo_date) }}</span>
+            </div>
+          </div>
+          <div class="flex gap-1">
+            <button class="btn btn-ghost btn-sm" @click="deleteMemo(m.id)">🗑</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- AI Chat FAB -->
+  <button class="chat-fab" @click="chatOpen = !chatOpen" :title="chatOpen ? '关闭AI助手' : '打开AI助手'">
+    {{ chatOpen ? '✕' : '🤖' }}
+  </button>
+  <div v-if="chatOpen" class="chat-panel">
+    <div class="chat-header">
+      <h3>🤖 悟空AI助手</h3>
+      <button class="btn btn-ghost btn-sm" @click="chatOpen = false">✕</button>
+    </div>
+    <div class="chat-body">
+      <div class="chat-message bot">
+        👋 你好！我是悟空AI助手，专为CPA备考设计。<br>
+        我可以帮你解答会计、税法、经济法的问题，分析你的学习薄弱点，提供针对性建议。
+      </div>
+      <div class="chat-placeholder">
+        <div>
+          <p style="font-size:2rem;margin-bottom:.5rem;">🔧</p>
+          <p><strong style="color:var(--gold);">悟空AI助手将在Edge Function部署后激活</strong></p>
+          <p class="text-sm mt-1">届时将支持智能问答、知识点讲解、错题分析等功能</p>
+          <p class="text-xs text-muted mt-2">API地址: {{ supabaseUrl }}/functions/v1/chat</p>
+        </div>
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <input class="input" v-model="chatInput" placeholder="输入问题..." @keyup.enter="sendChat" disabled>
+      <button class="btn btn-gold btn-sm" disabled>发送</button>
+    </div>
+  </div>
+
+  <!-- Add/Edit Memo Modal -->
+  <div v-if="memoModal.show" class="modal-overlay" @click.self="memoModal.show = false">
+    <div class="modal">
+      <h2>{{ memoModal.editingId ? '编辑备忘录' : '新建备忘录' }}</h2>
+      <div class="form-group">
+        <label>内容 *</label>
+        <textarea class="input" v-model="memoModal.form.content" rows="3" placeholder="输入备忘录内容..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>日期</label>
+        <input class="input" type="date" v-model="memoModal.form.memo_date">
+      </div>
+      <div class="form-group">
+        <label>优先级</label>
+        <select class="input" v-model="memoModal.form.priority">
+          <option value="">无</option>
+          <option value="high">高</option>
+          <option value="medium">中</option>
+          <option value="low">低</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" @click="memoModal.show = false">取消</button>
+        <button class="btn btn-primary" @click="saveMemo" :disabled="memoModal.saving">
+          {{ memoModal.saving ? '保存中...' : '保存' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Diary Modal -->
+  <div v-if="diaryModal.show" class="modal-overlay" @click.self="diaryModal.show = false">
+    <div class="modal">
+      <h2>✍️ 写学习日记</h2>
+      <div class="form-group">
+        <label>日期</label>
+        <input class="input" type="date" v-model="diaryModal.form.entry_date">
+      </div>
+      <div class="form-group">
+        <label>科目 *</label>
+        <select class="input" v-model="diaryModal.form.subject">
+          <option value="">请选择</option>
+          <option value="会计">会计</option>
+          <option value="税法">税法</option>
+          <option value="经济法">经济法</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>章节</label>
+        <input class="input" v-model="diaryModal.form.chapter_name" placeholder="如：第5章 长期股权投资">
+      </div>
+      <div class="form-group">
+        <label>口述记录</label>
+        <textarea class="input" v-model="diaryModal.form.oral_transcript" rows="4" placeholder="记录你今天学到的内容..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>AI总结</label>
+        <textarea class="input" v-model="diaryModal.form.ai_summary" rows="2" placeholder="AI生成的学习总结（可手动填写）"></textarea>
+      </div>
+      <div class="form-group">
+        <label>薄弱环节</label>
+        <input class="input" v-model="diaryModal.form.missing_points" placeholder="需要加强的知识点">
+      </div>
+      <div class="form-group">
+        <label>掌握度评分 (0-100)</label>
+        <input class="input" type="number" min="0" max="100" v-model.number="diaryModal.form.mastery_score" placeholder="如：75">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" @click="diaryModal.show = false">取消</button>
+        <button class="btn btn-primary" @click="saveDiary" :disabled="diaryModal.saving">
+          {{ diaryModal.saving ? '保存中...' : '保存日记' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const { createApp, ref, reactive, computed, onMounted } = Vue;
+
+const SUPABASE_URL = 'https://lwoqjahqneosnummjlbo.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_FSSDUBmO8k7gmIBGiKRo7Q_3-Cvriaf';
+
+const app = createApp({
+  setup() {
+    // -- Supabase client --
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // -- State --
+    const currentView = ref('dashboard');
+    const chatOpen = ref(false);
+    const chatInput = ref('');
+    const supabaseUrl = SUPABASE_URL;
+
+    // Toast
+    const toast = reactive({ show: false, type: 'success', message: '', timer: null });
+    const showToast = (msg, type = 'success') => {
+      toast.message = msg; toast.type = type; toast.show = true;
+      if (toast.timer) clearTimeout(toast.timer);
+      toast.timer = setTimeout(() => { toast.show = false; }, 3000);
+    };
+
+    // Loading states
+    const loading = reactive({
+      reviews: false, memos: false, recentDiary: false,
+      knowledge: false, diary: false, allMemos: false
+    });
+
+    // Data
+    const stats = reactive({
+      totalKnowledge: 0, totalDiary: 0, todayMemos: 0, todayReviews: 0, avgMastery: 0
+    });
+    const todayReviews = ref([]);
+    const todayMemos = ref([]);
+    const recentDiary = ref([]);
+    const allKnowledge = ref([]);
+    const allDiary = ref([]);
+    const allMemos = ref([]);
+
+    // -- Filters --
+    const kbFilter = reactive({ subject: '', chapter: '', level: '', search: '' });
+    const diaryFilter = reactive({ subject: '', search: '' });
+    const memoFilter = reactive({ status: 'all', priority: '', search: '' });
+
+    // -- Computed --
+    const todayString = computed(() => {
+      const d = new Date();
+      return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+    });
+    const weekdayString = computed(() => {
+      const days = ['日', '一', '二', '三', '四', '五', '六'];
+      return `星期${days[new Date().getDay()]}`;
+    });
+    const todayDateStr = computed(() => {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    });
+
+    const kbChapters = computed(() => {
+      const chapters = new Set();
+      allKnowledge.value.forEach(k => { if (k.chapter_name) chapters.add(k.chapter_name); });
+      return Array.from(chapters).sort();
+    });
+
+    const filteredKnowledge = computed(() => {
+      let data = allKnowledge.value;
+      if (kbFilter.subject) data = data.filter(k => k.subject === kbFilter.subject);
+      if (kbFilter.chapter) data = data.filter(k => k.chapter_name === kbFilter.chapter);
+      if (kbFilter.level) data = data.filter(k => k.syllabus_level === kbFilter.level);
+      if (kbFilter.search) {
+        const q = kbFilter.search.toLowerCase();
+        data = data.filter(k =>
+          (k.topic_name && k.topic_name.toLowerCase().includes(q)) ||
+          (k.content && k.content.toLowerCase().includes(q)) ||
+          (k.chapter_name && k.chapter_name.toLowerCase().includes(q)) ||
+          (k.key_points && k.key_points.toLowerCase().includes(q))
+        );
+      }
+      return data;
+    });
+
+    const filteredDiary = computed(() => {
+      let data = allDiary.value;
+      if (diaryFilter.subject) data = data.filter(d => d.subject === diaryFilter.subject);
+      if (diaryFilter.search) {
+        const q = diaryFilter.search.toLowerCase();
+        data = data.filter(d =>
+          (d.oral_transcript && d.oral_transcript.toLowerCase().includes(q)) ||
+          (d.ai_summary && d.ai_summary.toLowerCase().includes(q)) ||
+          (d.chapter_name && d.chapter_name.toLowerCase().includes(q)) ||
+          (d.missing_points && d.missing_points.toLowerCase().includes(q))
+        );
+      }
+      return data;
+    });
+
+    const filteredMemos = computed(() => {
+      let data = allMemos.value;
+      if (memoFilter.status === 'pending') data = data.filter(m => !m.is_done);
+      if (memoFilter.status === 'done') data = data.filter(m => m.is_done);
+      if (memoFilter.priority) data = data.filter(m => m.priority === memoFilter.priority);
+      if (memoFilter.search) {
+        const q = memoFilter.search.toLowerCase();
+        data = data.filter(m => m.content && m.content.toLowerCase().includes(q));
+      }
+      return data;
+    });
+
+    // -- Helpers --
+    const formatDate = (d) => {
+      if (!d) return '—';
+      const dt = new Date(d);
+      if (isNaN(dt.getTime())) return d;
+      return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+    };
+    const truncateText = (text, len = 100) => {
+      if (!text) return '';
+      return text.length > len ? text.slice(0, len) + '...' : text;
+    };
+    const getSubjectTagClass = (subj) => {
+      if (subj === '会计') return 'tag-blue';
+      if (subj === '税法') return 'tag-gold';
+      if (subj === '经济法') return 'tag-teal';
+      return 'tag-blue';
+    };
+    const getLevelTagClass = (level) => {
+      if (level === '掌握') return 'tag-gold';
+      if (level === '理解') return 'tag-blue';
+      return 'tag-teal';
+    };
+    const getScoreStyle = (score) => {
+      if (score >= 80) return `background:rgba(16,185,129,0.15);color:#10b981;`;
+      if (score >= 60) return `background:rgba(245,158,11,0.15);color:#f59e0b;`;
+      return `background:rgba(239,68,68,0.12);color:#ef4444;`;
+    };
+    const priorityLabel = (p) => {
+      if (p === 'high') return '高优先级';
+      if (p === 'medium') return '中优先级';
+      if (p === 'low') return '低优先级';
+      return '';
+    };
+    const resetKbFilter = () => {
+      kbFilter.subject = ''; kbFilter.chapter = ''; kbFilter.level = ''; kbFilter.search = '';
+    };
+
+    // -- Data fetching --
+    const fetchStats = async () => {
+      // Total knowledge
+      const { count: kCount } = await sb.from('knowledge_base').select('*', { count: 'exact', head: true });
+      stats.totalKnowledge = kCount || 0;
+
+      // Total diary
+      const { count: dCount } = await sb.from('study_diary').select('*', { count: 'exact', head: true });
+      stats.totalDiary = dCount || 0;
+
+      // Today memos
+      const { count: mCount } = await sb.from('daily_memos').select('*', { count: 'exact', head: true }).eq('memo_date', todayDateStr.value);
+      stats.todayMemos = mCount || 0;
+
+      // Today reviews
+      const { count: rCount } = await sb.from('mastery_tracking').select('*', { count: 'exact', head: true }).lte('next_review_date', todayDateStr.value);
+      stats.todayReviews = rCount || 0;
+
+      // Avg mastery
+      const { data: mData } = await sb.from('mastery_tracking').select('score');
+      if (mData && mData.length > 0) {
+        const avg = mData.reduce((sum, r) => sum + (r.score || 0), 0) / mData.length;
+        stats.avgMastery = Math.round(avg);
+      }
+    };
+
+    const fetchTodayReviews = async () => {
+      loading.reviews = true;
+      const { data, error } = await sb.from('mastery_tracking')
+        .select('*').lte('next_review_date', todayDateStr.value).order('next_review_date');
+      if (!error) todayReviews.value = data || [];
+      loading.reviews = false;
+    };
+
+    const fetchTodayMemos = async () => {
+      loading.memos = true;
+      const { data, error } = await sb.from('daily_memos')
+        .select('*').eq('memo_date', todayDateStr.value).order('id');
+      if (!error) todayMemos.value = data || [];
+      loading.memos = false;
+    };
+
+    const fetchRecentDiary = async () => {
+      loading.recentDiary = true;
+      const { data, error } = await sb.from('study_diary')
+        .select('*').order('entry_date', { ascending: false }).limit(5);
+      if (!error) recentDiary.value = data || [];
+      loading.recentDiary = false;
+    };
+
+    const fetchKnowledge = async () => {
+      loading.knowledge = true;
+      const { data, error } = await sb.from('knowledge_base').select('*').order('chapter_no').order('id');
+      if (!error) allKnowledge.value = data || [];
+      loading.knowledge = false;
+    };
+
+    const fetchDiary = async () => {
+      loading.diary = true;
+      const { data, error } = await sb.from('study_diary').select('*').order('entry_date', { ascending: false });
+      if (!error) allDiary.value = data || [];
+      loading.diary = false;
+    };
+
+    const fetchAllMemos = async () => {
+      loading.allMemos = true;
+      const { data, error } = await sb.from('daily_memos').select('*').order('memo_date', { ascending: false }).order('id');
+      if (!error) allMemos.value = data || [];
+      loading.allMemos = false;
+    };
+
+    const refreshDashboard = async () => {
+      await Promise.all([fetchStats(), fetchTodayReviews(), fetchTodayMemos(), fetchRecentDiary()]);
+      showToast('工作台已刷新', 'success');
+    };
+
+    // -- Memo CRUD --
+    const memoModal = reactive({
+      show: false, editingId: null, saving: false,
+      form: { content: '', memo_date: todayDateStr.value, priority: '' }
+    });
+    const openMemoModal = (memo = null) => {
+      if (memo) {
+        memoModal.editingId = memo.id;
+        memoModal.form = { content: memo.content, memo_date: memo.memo_date, priority: memo.priority || '' };
+      } else {
+        memoModal.editingId = null;
+        memoModal.form = { content: '', memo_date: todayDateStr.value, priority: '' };
+      }
+      memoModal.show = true;
+    };
+    const saveMemo = async () => {
+      if (!memoModal.form.content.trim()) { showToast('请输入备忘录内容', 'error'); return; }
+      memoModal.saving = true;
+      const payload = {
+        content: memoModal.form.content.trim(),
+        memo_date: memoModal.form.memo_date,
+        priority: memoModal.form.priority || null,
+        is_done: false
+      };
+      const { error } = await sb.from('daily_memos').insert(payload);
+      memoModal.saving = false;
+      if (error) { showToast('保存失败：' + error.message, 'error'); return; }
+      memoModal.show = false;
+      showToast('备忘录已添加', 'success');
+      await Promise.all([fetchTodayMemos(), fetchAllMemos(), fetchStats()]);
+    };
+    const toggleMemo = async (memo) => {
+      const { error } = await sb.from('daily_memos').update({ is_done: !memo.is_done }).eq('id', memo.id);
+      if (error) { showToast('操作失败', 'error'); return; }
+      memo.is_done = !memo.is_done;
+      await fetchStats();
+    };
+    const deleteMemo = async (id) => {
+      if (!confirm('确定删除这条备忘录吗？')) return;
+      const { error } = await sb.from('daily_memos').delete().eq('id', id);
+      if (error) { showToast('删除失败', 'error'); return; }
+      showToast('已删除', 'success');
+      await Promise.all([fetchTodayMemos(), fetchAllMemos(), fetchStats()]);
+    };
+
+    // -- Diary CRUD --
+    const diaryModal = reactive({
+      show: false, saving: false,
+      form: { entry_date: todayDateStr.value, subject: '', chapter_name: '', oral_transcript: '', ai_summary: '', missing_points: '', mastery_score: null }
+    });
+    const openDiaryModal = () => {
+      diaryModal.form = { entry_date: todayDateStr.value, subject: '', chapter_name: '', oral_transcript: '', ai_summary: '', missing_points: '', mastery_score: null };
+      diaryModal.show = true;
+    };
+    const saveDiary = async () => {
+      if (!diaryModal.form.subject) { showToast('请选择科目', 'error'); return; }
+      diaryModal.saving = true;
+      const payload = {
+        entry_date: diaryModal.form.entry_date,
+        subject: diaryModal.form.subject,
+        chapter_name: diaryModal.form.chapter_name || null,
+        oral_transcript: diaryModal.form.oral_transcript || null,
+        ai_summary: diaryModal.form.ai_summary || null,
+        missing_points: diaryModal.form.missing_points || null,
+        mastery_score: diaryModal.form.mastery_score || null,
+        is_published: false
+      };
+      const { error } = await sb.from('study_diary').insert(payload);
+      diaryModal.saving = false;
+      if (error) { showToast('保存失败：' + error.message, 'error'); return; }
+      diaryModal.show = false;
+      showToast('学习日记已保存 📝', 'success');
+      await Promise.all([fetchDiary(), fetchRecentDiary(), fetchStats()]);
+    };
+
+    // -- Chat --
+    const sendChat = () => {
+      // Edge Function not yet deployed — placeholder
+      chatInput.value = '';
+    };
+
+    // -- View switching --
+    const viewDataLoaders = {
+      dashboard: refreshDashboard,
+      knowledge: fetchKnowledge,
+      diary: fetchDiary,
+      memos: fetchAllMemos
+    };
+    const loadedViews = reactive({ dashboard: false, knowledge: false, diary: false, memos: false });
+    const switchView = async (view) => {
+      currentView.value = view;
+      if (!loadedViews[view] && viewDataLoaders[view]) {
+        await viewDataLoaders[view]();
+        loadedViews[view] = true;
+      }
+    };
+
+    // -- Init --
+    onMounted(async () => {
+      await refreshDashboard();
+      loadedViews.dashboard = true;
+    });
+
+    // Return everything to template
+    return {
+      currentView, chatOpen, chatInput, supabaseUrl,
+      toast, showToast, loading,
+      stats, todayReviews, todayMemos, recentDiary,
+      allKnowledge, allDiary, allMemos,
+      kbFilter, diaryFilter, memoFilter,
+      todayString, weekdayString, todayDateStr,
+      kbChapters,
+      filteredKnowledge, filteredDiary, filteredMemos,
+      formatDate, truncateText, getSubjectTagClass, getLevelTagClass, getScoreStyle, priorityLabel, resetKbFilter,
+      memoModal, openMemoModal, saveMemo, toggleMemo, deleteMemo,
+      diaryModal, openDiaryModal, saveDiary,
+      sendChat,
+      switchView, refreshDashboard
+    };
+  }
+});
+
+app.mount('#app');
+</script>
+</body>
+</html>
