@@ -502,12 +502,14 @@ select.input { cursor:pointer; }
           <input class="input" style="max-width:240px;" v-model="kbFilter.search" placeholder="🔍 搜索知识点...">
           <button class="btn btn-ghost btn-sm" @click="resetKbFilter">清除筛选</button>
         </div>
+        <button class="btn btn-primary btn-sm mt-2" @click="openKbModal()">+ 新增知识点</button>
       </div>
 
       <div v-if="loading.knowledge" class="loading"><div class="spinner"></div><p class="mt-1">加载知识库...</p></div>
       <div v-else-if="filteredKnowledge.length === 0" class="empty-state">
         <div class="icon">📭</div>
         <p>没有找到匹配的知识点</p>
+        <button class="btn btn-primary btn-sm mt-2" @click="openKbModal()">+ 新增知识点</button>
       </div>
       <div v-else class="grid-3">
         <div v-for="k in filteredKnowledge" :key="k.id" class="kb-card">
@@ -530,6 +532,10 @@ select.input { cursor:pointer; }
             <div v-if="k.common_mistakes" class="mt-2 text-sm"><strong style="color:var(--red);">常见错误：</strong>{{ k.common_mistakes }}</div>
             <div v-if="k.exam_years" class="mt-2 text-sm"><strong style="color:var(--muted);">历年考题：</strong>{{ k.exam_years }}</div>
           </details>
+          <div class="flex gap-1 mt-2" style="justify-content:flex-end">
+            <button class="btn btn-ghost btn-sm" @click="openKbModal(k)">✏️ 编辑</button>
+            <button class="btn btn-ghost btn-sm" style="color:var(--red)" @click="deleteKnowledge(k.id)">🗑</button>
+          </div>
         </div>
       </div>
     </div>
@@ -571,6 +577,8 @@ select.input { cursor:pointer; }
                   🏆 {{ d.mastery_score }}%
                 </span>
                 <span v-if="d.is_published" class="tag tag-green">已发布</span>
+                <button class="btn btn-ghost btn-sm" @click="openDiaryModal(d)" style="margin-left:.5rem">✏️</button>
+                <button class="btn btn-ghost btn-sm" style="color:var(--red)" @click="deleteDiary(d.id)">🗑</button>
               </div>
             </div>
             <p v-if="d.oral_transcript" class="mt-1"><strong style="color:var(--text);">口述记录：</strong>{{ d.oral_transcript }}</p>
@@ -736,6 +744,56 @@ select.input { cursor:pointer; }
         <button class="btn btn-outline" @click="diaryModal.show = false">取消</button>
         <button class="btn btn-primary" @click="saveDiary" :disabled="diaryModal.saving">
           {{ diaryModal.saving ? '保存中...' : '保存日记' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Knowledge Base Modal -->
+  <div v-if="kbModal.show" class="modal-overlay" @click.self="kbModal.show = false">
+    <div class="modal">
+      <h2>{{ kbModal.editingId ? '编辑知识点' : '新增知识点' }}</h2>
+      <div class="form-group">
+        <label>科目 *</label>
+        <select class="input" v-model="kbModal.form.subject">
+          <option value="">请选择</option>
+          <option value="会计">会计</option>
+          <option value="税法">税法</option>
+          <option value="经济法">经济法</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>章节号 *</label>
+        <input class="input" type="number" v-model.number="kbModal.form.chapter_no" placeholder="如：3">
+      </div>
+      <div class="form-group">
+        <label>章节名称 *</label>
+        <input class="input" v-model="kbModal.form.chapter_name" placeholder="如：固定资产">
+      </div>
+      <div class="form-group">
+        <label>知识点名称 *</label>
+        <input class="input" v-model="kbModal.form.topic_name" placeholder="如：固定资产折旧方法">
+      </div>
+      <div class="form-group">
+        <label>内容</label>
+        <textarea class="input" v-model="kbModal.form.content" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>大纲等级</label>
+        <select class="input" v-model.number="kbModal.form.syllabus_level">
+          <option :value="1">1-了解</option>
+          <option :value="2">2-理解</option>
+          <option :value="3">3-掌握</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>关键考点（逗号分隔）</label>
+        <input class="input" v-model="kbModal.form.key_points" placeholder="折旧方法,折旧年限,加速折旧">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" @click="kbModal.show = false">取消</button>
+        <button class="btn btn-primary" @click="saveKnowledge" :disabled="kbModal.saving">
+          {{ kbModal.saving ? '保存中...' : (kbModal.editingId ? '更新' : '新增') }}
         </button>
       </div>
     </div>
@@ -1019,8 +1077,14 @@ const app = createApp({
       show: false, saving: false,
       form: { entry_date: todayDateStr.value, subject: '', chapter_name: '', oral_transcript: '', ai_summary: '', missing_points: '', mastery_score: null }
     });
-    const openDiaryModal = () => {
-      diaryModal.form = { entry_date: todayDateStr.value, subject: '', chapter_name: '', oral_transcript: '', ai_summary: '', missing_points: '', mastery_score: null };
+    const openDiaryModal = (diary = null) => {
+      if (diary) {
+        diaryModal.editingId = diary.id;
+        diaryModal.form = { entry_date: diary.entry_date, subject: diary.subject, chapter_name: diary.chapter_name || '', oral_transcript: diary.oral_transcript || '', ai_summary: diary.ai_summary || '', missing_points: diary.missing_points || '', mastery_score: diary.mastery_score || null };
+      } else {
+        diaryModal.editingId = null;
+        diaryModal.form = { entry_date: todayDateStr.value, subject: '', chapter_name: '', oral_transcript: '', ai_summary: '', missing_points: '', mastery_score: null };
+      }
       diaryModal.show = true;
     };
     const saveDiary = async () => {
@@ -1033,15 +1097,70 @@ const app = createApp({
         oral_transcript: diaryModal.form.oral_transcript || null,
         ai_summary: diaryModal.form.ai_summary || null,
         missing_points: diaryModal.form.missing_points || null,
-        mastery_score: diaryModal.form.mastery_score || null,
-        is_published: false
+        mastery_score: diaryModal.form.mastery_score || null
       };
-      const { error } = await sb.from('study_diary').insert(payload);
+      let error;
+      if (diaryModal.editingId) {
+        ({ error } = await sb.from('study_diary').update(payload).eq('id', diaryModal.editingId));
+      } else {
+        ({ error } = await sb.from('study_diary').insert(payload));
+      }
       diaryModal.saving = false;
       if (error) { showToast('保存失败：' + error.message, 'error'); return; }
       diaryModal.show = false;
-      showToast('学习日记已保存 📝', 'success');
+      showToast(diaryModal.editingId ? '日记已更新 ✏️' : '学习日记已保存 📝', 'success');
       await Promise.all([fetchDiary(), fetchRecentDiary(), fetchStats()]);
+    };
+    const deleteDiary = async (id) => {
+      if (!confirm('确定删除这条日记吗？')) return;
+      const { error } = await sb.from('study_diary').delete().eq('id', id);
+      if (error) { showToast('删除失败', 'error'); return; }
+      showToast('已删除', 'success');
+      await Promise.all([fetchDiary(), fetchRecentDiary(), fetchStats()]);
+    };
+
+    // -- Knowledge Base CRUD --
+    const kbModal = reactive({
+      show: false, editingId: null, saving: false,
+      form: { subject: '', chapter_no: null, chapter_name: '', topic_name: '', content: '', syllabus_level: 2, key_points: '' }
+    });
+    const openKbModal = (kb = null) => {
+      if (kb) {
+        kbModal.editingId = kb.id;
+        kbModal.form = { subject: kb.subject, chapter_no: kb.chapter_no, chapter_name: kb.chapter_name, topic_name: kb.topic_name, content: kb.content || '', syllabus_level: kb.syllabus_level || 2, key_points: Array.isArray(kb.key_points) ? kb.key_points.join(',') : (kb.key_points || '') };
+      } else {
+        kbModal.editingId = null;
+        kbModal.form = { subject: '', chapter_no: null, chapter_name: '', topic_name: '', content: '', syllabus_level: 2, key_points: '' };
+      }
+      kbModal.show = true;
+    };
+    const saveKnowledge = async () => {
+      if (!kbModal.form.subject || !kbModal.form.topic_name || !kbModal.form.chapter_name) { showToast('请填写必填字段', 'error'); return; }
+      kbModal.saving = true;
+      const payload = {
+        subject: kbModal.form.subject, chapter_no: kbModal.form.chapter_no,
+        chapter_name: kbModal.form.chapter_name, topic_name: kbModal.form.topic_name,
+        content: kbModal.form.content || null, syllabus_level: kbModal.form.syllabus_level,
+        key_points: kbModal.form.key_points ? kbModal.form.key_points.split(',').map(s => s.trim()) : []
+      };
+      let error;
+      if (kbModal.editingId) {
+        ({ error } = await sb.from('knowledge_base').update(payload).eq('id', kbModal.editingId));
+      } else {
+        ({ error } = await sb.from('knowledge_base').insert(payload));
+      }
+      kbModal.saving = false;
+      if (error) { showToast('保存失败：' + error.message, 'error'); return; }
+      kbModal.show = false;
+      showToast(kbModal.editingId ? '知识点已更新' : '知识点已添加 📚', 'success');
+      await fetchKnowledge();
+    };
+    const deleteKnowledge = async (id) => {
+      if (!confirm('确定删除这个知识点吗？')) return;
+      const { error } = await sb.from('knowledge_base').delete().eq('id', id);
+      if (error) { showToast('删除失败', 'error'); return; }
+      showToast('已删除', 'success');
+      await fetchKnowledge();
     };
 
     // -- Chat --
@@ -1100,7 +1219,8 @@ const app = createApp({
       filteredKnowledge, filteredDiary, filteredMemos,
       formatDate, truncateText, getSubjectTagClass, getLevelTagClass, getScoreStyle, priorityLabel, resetKbFilter,
       memoModal, openMemoModal, saveMemo, toggleMemo, deleteMemo,
-      diaryModal, openDiaryModal, saveDiary,
+      diaryModal, openDiaryModal, saveDiary, deleteDiary,
+      kbModal, openKbModal, saveKnowledge, deleteKnowledge,
       sendChat,
       switchView, refreshDashboard
     };
