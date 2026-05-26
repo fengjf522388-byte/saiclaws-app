@@ -1032,21 +1032,21 @@ const app = createApp({
 
     const fetchKnowledge = async () => {
       loading.knowledge = true;
-      const { data, error } = await sb.from('knowledge_base').select('*').is('is_deleted',null).order('chapter_no').order('id');
+      const { data, error } = await sb.from('knowledge_base').select('*').neq('is_deleted',true).order('chapter_no').order('id');
       if (!error) allKnowledge.value = data || [];
       loading.knowledge = false;
     };
 
     const fetchDiary = async () => {
       loading.diary = true;
-      const { data, error } = await sb.from('study_diary').select('*').is('is_deleted',null).order('entry_date', { ascending: false });
+      const { data, error } = await sb.from('study_diary').select('*').neq('is_deleted',true).order('entry_date', { ascending: false });
       if (!error) allDiary.value = data || [];
       loading.diary = false;
     };
 
     const fetchAllMemos = async () => {
       loading.allMemos = true;
-      const { data, error } = await sb.from('daily_memos').select('*').is('is_deleted',null).order('memo_date', { ascending: false }).order('id');
+      const { data, error } = await sb.from('daily_memos').select('*').neq('is_deleted',true).order('memo_date', { ascending: false }).order('id');
       if (!error) allMemos.value = data || [];
       loading.allMemos = false;
     };
