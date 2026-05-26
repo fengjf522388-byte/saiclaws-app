@@ -355,6 +355,9 @@ select.input { cursor:pointer; }
         <li>
           <button class="nav-tab" :class="{ active: currentView === 'memos' }" @click="switchView('memos')">📋 备忘录</button>
         </li>
+        <li>
+          <button class="nav-tab" :class="{ active: currentView === 'trash' }" @click="switchView('trash')">🗑️ 回收站</button>
+        </li>
       </ul>
     </div>
   </nav>
@@ -636,6 +639,31 @@ select.input { cursor:pointer; }
         </div>
       </div>
     </div>
+
+    <!-- ============ TRASH ============ -->
+    <div v-if="currentView === 'trash'">
+      <div class="card mb-3">
+        <div class="card-header">
+          <h2>🗑️ 回收站</h2>
+          <span class="text-muted text-sm">共 {{ trashItems.length }} 条已删除</span>
+        </div>
+      </div>
+      <div v-if="loading.trash" class="loading"><div class="spinner"></div></div>
+      <div v-else-if="trashItems.length === 0" class="card empty-state">
+        <div class="icon">🎉</div><p>回收站是空的</p>
+      </div>
+      <div v-else class="grid-3">
+        <div v-for="t in trashItems" :key="t._id" class="kb-card" style="border-left:3px solid var(--red);">
+          <div class="flex items-center justify-between mb-2">
+            <span class="tag tag-red">{{ t._table }}</span>
+            <span class="text-xs text-muted">{{ t._date }}</span>
+          </div>
+          <div class="kb-title">{{ t._title }}</div>
+          <p class="text-sm text-muted">{{ truncateText(t._desc, 80) }}</p>
+          <button class="btn btn-success btn-sm mt-2" @click="restoreItem(t)">🔄 恢复</button>
+        </div>
+      </div>
+    </div>
   </main>
 
   <!-- AI Chat FAB -->
@@ -831,7 +859,7 @@ const app = createApp({
     // Loading states
     const loading = reactive({
       reviews: false, memos: false, recentDiary: false,
-      knowledge: false, diary: false, allMemos: false
+      knowledge: false, diary: false, allMemos: false, trash: false
     });
 
     // Data
@@ -844,6 +872,7 @@ const app = createApp({
     const allKnowledge = ref([]);
     const allDiary = ref([]);
     const allMemos = ref([]);
+    const trashItems = ref([]);
 
     // -- Filters --
     const kbFilter = reactive({ subject: '', chapter: '', level: '', search: '' });
@@ -1003,26 +1032,48 @@ const app = createApp({
 
     const fetchKnowledge = async () => {
       loading.knowledge = true;
-      const { data, error } = await sb.from('knowledge_base').select('*').order('chapter_no').order('id');
+      const { data, error } = await sb.from('knowledge_base').select('*').is('is_deleted',null).order('chapter_no').order('id');
       if (!error) allKnowledge.value = data || [];
       loading.knowledge = false;
     };
 
     const fetchDiary = async () => {
       loading.diary = true;
-      const { data, error } = await sb.from('study_diary').select('*').order('entry_date', { ascending: false });
+      const { data, error } = await sb.from('study_diary').select('*').is('is_deleted',null).order('entry_date', { ascending: false });
       if (!error) allDiary.value = data || [];
       loading.diary = false;
     };
 
     const fetchAllMemos = async () => {
       loading.allMemos = true;
-      const { data, error } = await sb.from('daily_memos').select('*').order('memo_date', { ascending: false }).order('id');
+      const { data, error } = await sb.from('daily_memos').select('*').is('is_deleted',null).order('memo_date', { ascending: false }).order('id');
       if (!error) allMemos.value = data || [];
       loading.allMemos = false;
     };
 
-    const refreshDashboard = async () => {
+
+    const fetchTrash = async () => {
+      loading.trash = true;
+      const items = [];
+      for (const t of [
+        {name:'knowledge_base',label:'📚 知识库',tk:'topic_name',dk:'content'},
+        {name:'study_diary',label:'📝 日记',tk:'chapter_name',dk:'oral_transcript'},
+        {name:'daily_memos',label:'📋 备忘录',tk:'content',dk:'memo_date'}
+      ]) {
+        const {data} = await sb.from(t.name).select('*').eq('is_deleted',true).order('id',{ascending:false}).limit(50);
+        if (data) items.push(...data.map(d=>({...d,_id:t.name+'-'+d.id,_table:t.label,_title:d[t.tk]||'(无标题)',_desc:d[t.dk]||'',_date:(d.updated_at||d.created_at||'').slice(0,10),_sourceTable:t.name})));
+      }
+      trashItems.value = items.sort((a,b)=>b._date.localeCompare(a._date));
+      loading.trash = false;
+    };
+    const restoreItem = async (item) => {
+      const {error} = await sb.from(item._sourceTable).update({is_deleted:false}).eq('id',item.id.split('-')[1]);
+      if (error) { showToast('恢复失败','error'); return; }
+      showToast('已恢复 ✅','success');
+      fetchTrash(); fetchKnowledge(); fetchDiary(); fetchAllMemos(); fetchStats();
+    };
+
+    const refreshDashboard    const refreshDashboard = async () => {
       await Promise.all([fetchStats(), fetchTodayReviews(), fetchTodayMemos(), fetchRecentDiary()]);
       showToast('工作台已刷新', 'success');
     };
@@ -1066,7 +1117,7 @@ const app = createApp({
     };
     const deleteMemo = async (id) => {
       if (!confirm('确定删除这条备忘录吗？')) return;
-      const { error } = await sb.from('daily_memos').delete().eq('id', id);
+      const { error } = await sb.from('daily_memos').update({is_deleted:true}).eq('id', id);
       if (error) { showToast('删除失败', 'error'); return; }
       showToast('已删除', 'success');
       await Promise.all([fetchTodayMemos(), fetchAllMemos(), fetchStats()]);
@@ -1113,7 +1164,7 @@ const app = createApp({
     };
     const deleteDiary = async (id) => {
       if (!confirm('确定删除这条日记吗？')) return;
-      const { error } = await sb.from('study_diary').delete().eq('id', id);
+      const { error } = await sb.from('study_diary').update({is_deleted:true}).eq('id', id);
       if (error) { showToast('删除失败', 'error'); return; }
       showToast('已删除', 'success');
       await Promise.all([fetchDiary(), fetchRecentDiary(), fetchStats()]);
@@ -1157,7 +1208,7 @@ const app = createApp({
     };
     const deleteKnowledge = async (id) => {
       if (!confirm('确定删除这个知识点吗？')) return;
-      const { error } = await sb.from('knowledge_base').delete().eq('id', id);
+      const { error } = await sb.from('knowledge_base').update({is_deleted:true}).eq('id', id);
       if (error) { showToast('删除失败', 'error'); return; }
       showToast('已删除', 'success');
       await fetchKnowledge();
@@ -1190,9 +1241,9 @@ const app = createApp({
       dashboard: refreshDashboard,
       knowledge: fetchKnowledge,
       diary: fetchDiary,
-      memos: fetchAllMemos
+      memos: fetchAllMemos, trash: fetchTrash
     };
-    const loadedViews = reactive({ dashboard: false, knowledge: false, diary: false, memos: false });
+    const loadedViews = reactive({ dashboard: false, knowledge: false, diary: false, memos: false, trash: false });
     const switchView = async (view) => {
       currentView.value = view;
       if (!loadedViews[view] && viewDataLoaders[view]) {
@@ -1212,7 +1263,7 @@ const app = createApp({
       currentView, chatOpen, chatInput, supabaseUrl,
       toast, showToast, loading,
       stats, todayReviews, todayMemos, recentDiary,
-      allKnowledge, allDiary, allMemos,
+      allKnowledge, allDiary, allMemos, trashItems,
       kbFilter, diaryFilter, memoFilter,
       todayString, weekdayString, todayDateStr,
       kbChapters,
@@ -1222,7 +1273,7 @@ const app = createApp({
       diaryModal, openDiaryModal, saveDiary, deleteDiary,
       kbModal, openKbModal, saveKnowledge, deleteKnowledge,
       sendChat,
-      switchView, refreshDashboard
+      switchView, refreshDashboard, fetchTrash, restoreItem
     };
   }
 });
