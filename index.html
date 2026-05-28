@@ -1470,6 +1470,8 @@ const app = createApp({
       return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
     });
     const pomoProgress = computed(() => 1 - (pomoSeconds.value / pomoTotal.value));
+
+    const filteredMemos = computed(() => {
       let data = allMemos.value;
       if (memoFilter.status === 'pending') data = data.filter(m => !m.is_done);
       if (memoFilter.status === 'done') data = data.filter(m => m.is_done);
