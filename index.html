@@ -329,6 +329,120 @@ select.input { cursor:pointer; }
   .grid-3 { grid-template-columns:1fr; }
   .nav-tab { font-size:.78rem; padding:.3rem .5rem; }
 }
+
+/* ===== SAIClaws 3.0 NEW STYLES ===== */
+/* Today View */
+.greeting { font-size:1.8rem; font-weight:800; color:var(--text-heading); margin-bottom:.3rem; }
+.greeting-sub { color:var(--muted); font-size:.95rem; }
+.today-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:1.2rem 1.5rem; }
+.today-card h3 { font-size:1rem; font-weight:700; color:var(--text-heading); margin-bottom:.8rem; display:flex; align-items:center; gap:.5rem; }
+.today-section { margin-bottom:1.5rem; }
+.today-section:last-child { margin-bottom:0; }
+.quick-actions { display:flex; gap:.5rem; flex-wrap:wrap; }
+
+/* Heatmap */
+.heatmap { display:flex; gap:3px; flex-wrap:wrap; }
+.heatmap-day { width:14px; height:14px; border-radius:3px; cursor:default; }
+.heatmap-day.l0 { background:rgba(148,163,184,0.06); }
+.heatmap-day.l1 { background:rgba(16,185,129,0.15); }
+.heatmap-day.l2 { background:rgba(16,185,129,0.35); }
+.heatmap-day.l3 { background:rgba(16,185,129,0.6); }
+.heatmap-day.l4 { background:rgba(16,185,129,0.85); }
+.heatmap-label { font-size:.65rem; color:var(--muted-dark); text-align:center; margin-top:4px; }
+
+/* Streak badge */
+.streak-badge { display:inline-flex; align-items:center; gap:.3rem; padding:.3rem .8rem; border-radius:20px; font-size:.8rem; font-weight:700; background:linear-gradient(135deg,var(--gold),#d97706); color:#1a1a2e; }
+.streak-card { text-align:center; padding:1rem; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); }
+.streak-num { font-size:2.5rem; font-weight:900; color:var(--gold); line-height:1; }
+
+/* Flashcard */
+.flashcard-card { perspective:1000px; cursor:pointer; min-height:200px; }
+.flashcard-inner { position:relative; width:100%; min-height:200px; transition:transform .5s; transform-style:preserve-3d; }
+.flashcard-card.flipped .flashcard-inner { transform:rotateY(180deg); }
+.flashcard-front, .flashcard-back { position:absolute; width:100%; height:100%; backface-visibility:hidden; border-radius:var(--radius); padding:1.5rem; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+.flashcard-front { background:linear-gradient(135deg,var(--navy-light),var(--bg-card)); border:1px solid var(--border); }
+.flashcard-back { background:linear-gradient(135deg,var(--blue-dim),var(--bg-card)); border:1px solid var(--blue); transform:rotateY(180deg); }
+.flashcard-question { font-size:1.15rem; font-weight:600; color:var(--text-heading); line-height:1.6; }
+.flashcard-answer { font-size:1.05rem; color:var(--text); line-height:1.7; }
+.flashcard-hint { position:absolute; bottom:.8rem; right:1rem; font-size:.7rem; color:var(--muted-dark); }
+.quality-btns { display:flex; gap:.4rem; justify-content:center; margin-top:1rem; flex-wrap:wrap; }
+.quality-btn { width:40px; height:40px; border-radius:50%; border:2px solid var(--border); background:var(--bg); color:var(--muted); font-weight:700; cursor:pointer; transition:all .15s; font-size:.85rem; }
+.quality-btn:hover { border-color:var(--blue-bright); color:var(--text); }
+.quality-btn.q0:hover { border-color:var(--red); background:var(--red-dim); }
+.quality-btn.q1:hover { border-color:#f97316; background:rgba(249,115,22,.12); }
+.quality-btn.q2:hover { border-color:var(--gold); background:var(--gold-dim); }
+.quality-btn.q3:hover { border-color:var(--blue-bright); background:var(--blue-dim); }
+.quality-btn.q4:hover { border-color:var(--green); background:var(--green-dim); }
+.quality-btn.q5:hover { border-color:var(--teal); background:var(--teal-dim); }
+.review-card { position:relative; }
+.flashcard-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:.8rem; margin-bottom:1.2rem; }
+.flashcard-stat { text-align:center; padding:.6rem; background:var(--bg); border-radius:var(--radius-sm); border:1px solid var(--border); }
+.flashcard-stat .num { font-size:1.5rem; font-weight:800; color:var(--blue-bright); }
+.flashcard-stat .lbl { font-size:.7rem; color:var(--muted); margin-top:.2rem; }
+.fc-progress { height:6px; background:var(--border); border-radius:3px; margin-top:.5rem; overflow:hidden; }
+.fc-progress-bar { height:100%; background:var(--green); border-radius:3px; transition:width .4s; }
+
+/* Pomodoro */
+.pomodoro-container { text-align:center; padding:2rem; }
+.pomodoro-ring { position:relative; width:220px; height:220px; margin:0 auto 1.5rem; }
+.pomodoro-ring svg { transform:rotate(-90deg); }
+.pomodoro-ring .bg-circle { fill:none; stroke:var(--border); stroke-width:8; }
+.pomodoro-ring .fg-circle { fill:none; stroke:var(--blue-bright); stroke-width:8; stroke-linecap:round; transition:stroke-dashoffset .5s linear; }
+.pomodoro-time { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:3rem; font-weight:800; color:var(--text-heading); }
+.pomodoro-label { font-size:.85rem; color:var(--muted); font-weight:400; }
+.pomodoro-controls { display:flex; gap:.8rem; justify-content:center; margin-bottom:1rem; }
+.pomodoro-session-type { display:flex; gap:.5rem; justify-content:center; margin-bottom:1.2rem; }
+.pomodoro-session-type button { padding:.35rem .8rem; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; font-size:.8rem; transition:all .15s; }
+.pomodoro-session-type button.active { background:var(--blue-dim); border-color:var(--blue-bright); color:var(--blue-bright); }
+
+/* Search Overlay */
+.search-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:300; display:flex; align-items:flex-start; justify-content:center; padding-top:15vh; backdrop-filter:blur(8px); }
+.search-box { width:90%; max-width:600px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.5); }
+.search-input-wrap { display:flex; align-items:center; padding:1rem 1.2rem; border-bottom:1px solid var(--border); gap:.8rem; }
+.search-input-wrap .icon { font-size:1.2rem; color:var(--muted); }
+.search-input-wrap input { flex:1; background:none; border:none; color:var(--text); font-size:1.1rem; outline:none; font-family:inherit; }
+.search-input-wrap kbd { padding:.15rem .5rem; border-radius:4px; background:var(--bg); border:1px solid var(--border); font-size:.7rem; color:var(--muted-dark); }
+.search-results { max-height:50vh; overflow-y:auto; }
+.search-group { padding:.6rem 1.2rem; font-size:.7rem; font-weight:700; color:var(--muted-dark); text-transform:uppercase; letter-spacing:.05em; }
+.search-item { padding:.7rem 1.2rem; cursor:pointer; border-bottom:1px solid var(--border); transition:background .1s; display:flex; align-items:center; justify-content:space-between; }
+.search-item:hover, .search-item.active { background:rgba(255,255,255,0.04); }
+.search-item .title { font-size:.88rem; color:var(--text); flex:1; }
+.search-item .meta { font-size:.7rem; color:var(--muted-dark); }
+.search-empty { padding:2rem; text-align:center; color:var(--muted); }
+
+/* Export menu */
+.dropdown { position:relative; display:inline-block; }
+.dropdown-menu { position:absolute; right:0; top:100%; margin-top:.3rem; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); min-width:180px; box-shadow:0 8px 30px rgba(0,0,0,0.4); z-index:50; padding:.3rem; }
+.dropdown-item { display:block; width:100%; padding:.5rem 1rem; text-align:left; background:none; border:none; color:var(--text); font-size:.85rem; cursor:pointer; border-radius:4px; font-family:inherit; }
+.dropdown-item:hover { background:rgba(255,255,255,0.05); }
+
+/* Goal progress */
+.goal-progress { margin:.5rem 0; }
+.goal-bar { height:10px; background:var(--border); border-radius:5px; overflow:hidden; }
+.goal-bar-fill { height:100%; border-radius:5px; transition:width .3s; background:linear-gradient(90deg,var(--blue-bright),var(--teal)); }
+.goal-text { font-size:.78rem; color:var(--muted); margin-top:.3rem; text-align:right; }
+
+/* Bookmark item */
+.bm-item { padding:.8rem 0; border-bottom:1px solid var(--border); }
+.bm-item:last-child { border-bottom:none; }
+.bm-title { font-weight:600; color:var(--text-heading); font-size:.9rem; }
+.bm-url { font-size:.75rem; color:var(--muted-dark); word-break:break-all; }
+.bm-summary { font-size:.8rem; color:var(--muted); margin-top:.3rem; line-height:1.5; }
+.bm-tags { display:flex; gap:.3rem; flex-wrap:wrap; margin-top:.4rem; }
+.bm-tag { padding:.1rem .5rem; border-radius:10px; font-size:.65rem; background:var(--blue-dim); color:var(--blue-bright); }
+
+/* Keyboard hint */
+.kbd-hint { position:fixed; bottom:5.5rem; right:1.5rem; z-index:149; padding:.4rem .7rem; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); font-size:.7rem; color:var(--muted-dark); pointer-events:none; opacity:.7; }
+
+/* SRS review queue */
+.review-queue-item { display:flex; align-items:center; justify-content:space-between; padding:.5rem .8rem; border-radius:var(--radius-sm); background:var(--bg); margin-bottom:.3rem; }
+.review-queue-item .q { font-size:.85rem; color:var(--text); flex:1; margin-right:.8rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.review-queue-item .due { font-size:.7rem; color:var(--muted-dark); white-space:nowrap; }
+
+/* Sound toggle */
+.sound-toggle { font-size:.75rem; color:var(--muted); cursor:pointer; padding:.2rem .5rem; border-radius:4px; border:1px solid var(--border); background:transparent; }
+.sound-toggle.active { color:var(--green); border-color:var(--green); }
+}
 </style>
 </head>
 <body>
@@ -356,6 +470,18 @@ select.input { cursor:pointer; }
           <button class="nav-tab" :class="{ active: currentView === 'memos' }" @click="switchView('memos')">📋 备忘录</button>
         </li>
         <li>
+          <button class="nav-tab" :class="{ active: currentView === 'today' }" @click="switchView('today')">📅 今日</button>
+        </li>
+        <li>
+          <button class="nav-tab" :class="{ active: currentView === 'flashcards' }" @click="switchView('flashcards')">📇 闪卡</button>
+        </li>
+        <li>
+          <button class="nav-tab" :class="{ active: currentView === 'pomodoro' }" @click="switchView('pomodoro')">⏱️ 专注</button>
+        </li>
+        <li>
+          <button class="nav-tab" :class="{ active: currentView === 'bookmarks' }" @click="switchView('bookmarks')">🔖 收藏</button>
+        </li>
+        <li>
           <button class="nav-tab" :class="{ active: currentView === 'trash' }" @click="switchView('trash')">🗑️ 回收站</button>
         </li>
       </ul>
@@ -376,6 +502,13 @@ select.input { cursor:pointer; }
           </div>
           <div style="display:flex;gap:.5rem;">
             <button class="btn btn-outline btn-sm" @click="refreshDashboard">🔄 刷新</button>
+            <div class="dropdown">
+              <button class="btn btn-outline btn-sm" @click="showExportMenu = !showExportMenu">📥 导出 ▾</button>
+              <div v-if="showExportMenu" class="dropdown-menu">
+                <button class="dropdown-item" @click="exportJSON(); showExportMenu = false;">📦 导出 JSON</button>
+                <button class="dropdown-item" @click="exportMarkdown(); showExportMenu = false;">📝 导出 Markdown</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -678,6 +811,307 @@ select.input { cursor:pointer; }
         </div>
       </div>
     </div>
+    <!-- ============ TODAY VIEW ============ -->
+    <div v-if="currentView === 'today'">
+      <!-- Greeting + Streak -->
+      <div class="card mb-3">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+          <div>
+            <div class="greeting">{{ greetingText }}，飞哥 👋</div>
+            <div class="greeting-sub">{{ todayString }} · {{ weekdayString }}</div>
+          </div>
+          <div style="display:flex;gap:.8rem;align-items:center;">
+            <div class="streak-badge">🔥 连续 {{ streak }} 天</div>
+            <div class="streak-badge" style="background:linear-gradient(135deg,var(--blue-bright),var(--teal));">📇 {{ srsDueCount }} 张待复习</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- SRS Review Queue -->
+        <div class="today-card">
+          <h3>🧠 今日闪卡复习 <span class="tag tag-gold">{{ srsDueCount }} 张</span></h3>
+          <div v-if="loading.todaySRS" class="loading"><div class="spinner"></div></div>
+          <div v-else-if="todaySRSQueue.length === 0" style="padding:1rem 0;color:var(--muted);text-align:center;">
+            🎉 今日没有待复习闪卡！
+            <button class="btn btn-outline btn-sm mt-2" @click="switchView('flashcards')">去创建闪卡</button>
+          </div>
+          <div v-else>
+            <div v-for="fc in todaySRSQueue.slice(0,8)" :key="fc.flashcard_id" class="review-queue-item">
+              <span class="q">{{ truncateText(fc.question, 50) }}</span>
+              <span class="tag" :class="getSubjectTagClass(fc.subject)">{{ fc.subject || '未分类' }}</span>
+              <span class="due">{{ fc.repetitions || 0 }}次复习</span>
+            </div>
+          </div>
+          <button v-if="todaySRSQueue.length > 0" class="btn btn-gold btn-sm mt-2" @click="startSRSReview()" style="width:100%;">🎯 开始闪卡复习</button>
+        </div>
+
+        <!-- Daily Goal -->
+        <div class="today-card">
+          <h3>🎯 今日学习目标</h3>
+          <div style="margin-bottom:.8rem;">
+            <span class="text-sm text-muted">目标时长（分钟）</span>
+            <div class="flex gap-2 items-center mt-1">
+              <input class="input" type="number" v-model.number="dailyGoal" min="0" max="480" style="width:100px;">
+              <button class="btn btn-primary btn-sm" @click="saveDailyGoal">保存</button>
+            </div>
+          </div>
+          <div class="goal-progress">
+            <div style="display:flex;justify-content:space-between;margin-bottom:.3rem;">
+              <span class="text-sm">今日已学习</span>
+              <span class="text-sm font-bold" style="color:var(--blue-bright);">{{ todayStudyMinutes }} / {{ dailyGoal }} 分钟</span>
+            </div>
+            <div class="goal-bar"><div class="goal-bar-fill" :style="{width:Math.min(100,Math.round(todayStudyMinutes/Math.max(1,dailyGoal)*100))+'%'}"></div></div>
+            <div class="goal-text">{{ Math.round(todayStudyMinutes/Math.max(1,dailyGoal)*100) }}%</div>
+          </div>
+          <div class="quick-actions mt-2">
+            <button class="btn btn-primary btn-sm" @click="switchView('pomodoro')">⏱️ 开始番茄钟</button>
+            <button class="btn btn-outline btn-sm" @click="switchView('diary'); openDiaryModal()">✍️ 写日记</button>
+            <button class="btn btn-outline btn-sm" @click="openMemoModal()">📋 加备忘</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Today's Memos -->
+      <div class="today-card mt-3">
+        <h3>📋 今日备忘录</h3>
+        <div v-if="todayMemos.length === 0" style="color:var(--muted);text-align:center;padding:1rem;">暂无备忘录</div>
+        <div v-else>
+          <div v-for="m in todayMemos" :key="m.id" class="memo-item">
+            <div class="memo-check" :class="{ done: m.is_done }" @click="toggleMemo(m)"></div>
+            <div class="memo-content">
+              <div class="memo-text" :class="{ done: m.is_done }">{{ m.content }}</div>
+              <div v-if="m.priority" class="memo-priority mt-1" :class="'priority-' + m.priority">⚑ {{ priorityLabel(m.priority) }}</div>
+            </div>
+            <button class="btn btn-ghost btn-sm" @click="deleteMemo(m.id)">🗑</button>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm mt-2" @click="openMemoModal()">+ 添加备忘</button>
+      </div>
+    </div>
+
+    <!-- ============ FLASHCARDS ============ -->
+    <div v-if="currentView === 'flashcards'">
+      <!-- Flashcard Stats -->
+      <div class="flashcard-stats">
+        <div class="flashcard-stat"><div class="num">{{ fcStats.total }}</div><div class="lbl">总卡片</div></div>
+        <div class="flashcard-stat"><div class="num" style="color:var(--green);">{{ fcStats.mastered }}</div><div class="lbl">已掌握</div></div>
+        <div class="flashcard-stat"><div class="num" style="color:var(--gold);">{{ fcStats.due }}</div><div class="lbl">待复习</div></div>
+        <div class="flashcard-stat"><div class="num" style="color:var(--teal);">{{ fcStats.reviewedToday }}</div><div class="lbl">今日已复习</div></div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header">
+          <h3>📇 闪卡管理</h3>
+          <div class="flex gap-2">
+            <button class="btn btn-gold btn-sm" @click="startSRSReview()" v-if="fcStats.due > 0">🎯 开始复习</button>
+            <button class="btn btn-primary btn-sm" @click="openFcModal()">+ 新建闪卡</button>
+            <button class="btn btn-outline btn-sm" @click="generateFlashcardsFromKB()" :disabled="fcGenerating">{{ fcGenerating ? '生成中...' : '🤖 AI生成' }}</button>
+          </div>
+        </div>
+        <div class="flex gap-2 flex-wrap items-center">
+          <select class="input" style="max-width:140px;" v-model="fcFilter.subject">
+            <option value="">全部科目</option>
+            <option value="会计">会计</option>
+            <option value="税法">税法</option>
+            <option value="经济法">经济法</option>
+          </select>
+          <input class="input" style="max-width:220px;" v-model="fcFilter.search" placeholder="🔍 搜索闪卡...">
+          <button class="btn btn-ghost btn-sm" @click="fcFilter.subject='';fcFilter.search='';">清除</button>
+        </div>
+      </div>
+
+      <!-- Review Mode -->
+      <div v-if="fcReviewMode" class="card mb-3" style="border:2px solid var(--gold);">
+        <div class="card-header">
+          <h3 style="color:var(--gold);">🎯 复习中 ({{ fcReviewIndex + 1 }}/{{ fcReviewQueue.length }})</h3>
+          <button class="btn btn-ghost btn-sm" @click="fcReviewMode = false">退出复习</button>
+        </div>
+        <div class="fc-progress mb-2"><div class="fc-progress-bar" :style="{width:Math.round((fcReviewIndex/fcReviewQueue.length)*100)+'%'}"></div></div>
+        <div v-if="fcReviewQueue[fcReviewIndex]" class="flashcard-card" :class="{ flipped: fcFlipped }" @click="fcFlipped = !fcFlipped">
+          <div class="flashcard-inner">
+            <div class="flashcard-front">
+              <div class="flashcard-question">{{ fcReviewQueue[fcReviewIndex].question }}</div>
+              <div class="flashcard-hint">点击翻转 👆</div>
+            </div>
+            <div class="flashcard-back">
+              <div class="flashcard-answer">{{ fcReviewQueue[fcReviewIndex].answer }}</div>
+              <div class="quality-btns">
+                <button class="quality-btn q0" @click.stop="rateFlashcard(0)" title="完全忘记">0</button>
+                <button class="quality-btn q1" @click.stop="rateFlashcard(1)" title="有印象但记不起">1</button>
+                <button class="quality-btn q2" @click.stop="rateFlashcard(2)" title="有错误">2</button>
+                <button class="quality-btn q3" @click.stop="rateFlashcard(3)" title="正确但犹豫">3</button>
+                <button class="quality-btn q4" @click.stop="rateFlashcard(4)" title="正确且自信">4</button>
+                <button class="quality-btn q5" @click.stop="rateFlashcard(5)" title="完美">5</button>
+              </div>
+              <div class="text-xs text-muted mt-2">0=完全忘记 · 3=正确 · 5=完美掌握</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flashcard List -->
+      <div v-if="!fcReviewMode">
+        <div v-if="loading.flashcards" class="loading"><div class="spinner"></div></div>
+        <div v-else-if="filteredFlashcards.length === 0" class="card empty-state">
+          <div class="icon">📇</div>
+          <p>还没有闪卡，创建一个吧！</p>
+          <button class="btn btn-primary mt-2" @click="openFcModal()">+ 新建闪卡</button>
+          <button class="btn btn-outline mt-2" @click="generateFlashcardsFromKB()">🤖 从知识库生成</button>
+        </div>
+        <div v-else class="grid-3">
+          <div v-for="fc in filteredFlashcards" :key="fc.id" class="kb-card">
+            <div class="flex items-center justify-between mb-2">
+              <span class="tag" :class="getSubjectTagClass(fc.subject)">{{ fc.subject || '未分类' }}</span>
+              <span class="text-xs text-muted">{{ fc.source_type === 'ai_generated' ? '🤖' : '✍️' }} {{ formatDate(fc.created_at) }}</span>
+            </div>
+            <div class="kb-title" style="font-size:.9rem;">{{ truncateText(fc.question, 80) }}</div>
+            <p class="text-sm text-muted mt-1">{{ truncateText(fc.answer, 60) }}</p>
+            <div v-if="fc.ease_factor" class="text-xs mt-2" style="color:var(--muted-dark);">
+              🔄 {{ fc.repetitions || 0 }}次 · 📅 下次: {{ formatDate(fc.next_review_at) }}
+            </div>
+            <div class="flex gap-1 mt-2" style="justify-content:flex-end;">
+              <button class="btn btn-ghost btn-sm" @click="deleteFlashcard(fc.id)">🗑</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flashcard Modal -->
+      <div v-if="fcModal.show" class="modal-overlay" @click.self="fcModal.show = false">
+        <div class="modal">
+          <h2>📇 新建闪卡</h2>
+          <div class="form-group"><label>科目</label><select class="input" v-model="fcModal.form.subject"><option value="">选择</option><option value="会计">会计</option><option value="税法">税法</option><option value="经济法">经济法</option></select></div>
+          <div class="form-group"><label>问题 *</label><textarea class="input" v-model="fcModal.form.question" rows="2" placeholder="如：固定资产折旧方法有哪些？"></textarea></div>
+          <div class="form-group"><label>答案 *</label><textarea class="input" v-model="fcModal.form.answer" rows="3" placeholder="如：年限平均法、工作量法、双倍余额递减法、年数总和法"></textarea></div>
+          <div class="modal-actions">
+            <button class="btn btn-outline" @click="fcModal.show = false">取消</button>
+            <button class="btn btn-primary" @click="saveFlashcard" :disabled="fcModal.saving">{{ fcModal.saving ? '保存中...' : '保存' }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ POMODORO ============ -->
+    <div v-if="currentView === 'pomodoro'">
+      <div class="card">
+        <div class="pomodoro-container">
+          <div class="pomodoro-session-type">
+            <button :class="{ active: pomoType === 'focus' }" @click="setPomoType('focus')">🍅 专注 (25min)</button>
+            <button :class="{ active: pomoType === 'break' }" @click="setPomoType('break')">☕ 休息 (5min)</button>
+          </div>
+          <div class="pomodoro-ring">
+            <svg width="220" height="220" viewBox="0 0 220 220">
+              <circle class="bg-circle" cx="110" cy="110" r="100"/>
+              <circle class="fg-circle" cx="110" cy="110" r="100"
+                :stroke-dasharray="2 * Math.PI * 100"
+                :stroke-dashoffset="2 * Math.PI * 100 * (1 - pomoProgress)"/>
+            </svg>
+            <div class="pomodoro-time">
+              {{ pomoDisplay }}
+              <span class="pomodoro-label">{{ pomoType === 'focus' ? '专注中' : '休息中' }}</span>
+            </div>
+          </div>
+          <div class="pomodoro-controls">
+            <button class="btn btn-primary" @click="togglePomodoro" v-if="!pomoRunning">▶ 开始</button>
+            <button class="btn btn-outline" @click="togglePomodoro" v-else>⏸ 暂停</button>
+            <button class="btn btn-outline" @click="resetPomodoro">↺ 重置</button>
+          </div>
+          <div v-if="pomoType === 'focus'" style="margin-bottom:1rem;">
+            <select class="input" v-model="pomoSubject" style="max-width:200px;display:inline;">
+              <option value="">选择科目</option>
+              <option value="会计">会计</option><option value="税法">税法</option><option value="经济法">经济法</option>
+            </select>
+          </div>
+          <div class="text-sm text-muted">
+            🍅 今日: {{ pomoTodayCount }} 个番茄 · {{ pomoTodayMinutes }} 分钟
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ BOOKMARKS ============ -->
+    <div v-if="currentView === 'bookmarks'">
+      <div class="card mb-3">
+        <div class="card-header">
+          <h2>🔖 学习资料收藏</h2>
+          <button class="btn btn-primary btn-sm" @click="openBmModal()">+ 添加收藏</button>
+        </div>
+        <div class="flex gap-2 flex-wrap items-center">
+          <select class="input" style="max-width:140px;" v-model="bmFilter.subject">
+            <option value="">全部科目</option>
+            <option value="会计">会计</option><option value="税法">税法</option><option value="经济法">经济法</option>
+          </select>
+          <input class="input" style="max-width:220px;" v-model="bmFilter.search" placeholder="🔍 搜索收藏...">
+        </div>
+      </div>
+      <div v-if="loading.bookmarks" class="loading"><div class="spinner"></div></div>
+      <div v-else-if="filteredBookmarks.length === 0" class="card empty-state">
+        <div class="icon">🔖</div><p>还没有收藏的资料</p>
+      </div>
+      <div v-else class="card">
+        <div v-for="b in filteredBookmarks" :key="b.id" class="bm-item">
+          <div class="flex items-center justify-between">
+            <a :href="b.url" target="_blank" class="bm-title" style="text-decoration:none;">{{ b.title || '无标题' }}</a>
+            <div class="flex gap-1 items-center">
+              <span v-if="b.subject" class="tag" :class="getSubjectTagClass(b.subject)">{{ b.subject }}</span>
+              <button class="btn btn-ghost btn-sm" @click="deleteBookmark(b.id)">🗑</button>
+            </div>
+          </div>
+          <div class="bm-url">{{ b.url }}</div>
+          <div v-if="b.summary" class="bm-summary">{{ b.summary }}</div>
+          <div v-if="b.tags && b.tags.length" class="bm-tags">
+            <span v-for="t in b.tags" :key="t" class="bm-tag">{{ t }}</span>
+          </div>
+          <div class="text-xs text-muted mt-1">{{ formatDate(b.created_at) }}</div>
+        </div>
+      </div>
+      <!-- Bookmark Modal -->
+      <div v-if="bmModal.show" class="modal-overlay" @click.self="bmModal.show = false">
+        <div class="modal">
+          <h2>🔖 添加收藏</h2>
+          <div class="form-group"><label>URL *</label><input class="input" v-model="bmModal.form.url" placeholder="https://..."></div>
+          <div class="form-group"><label>标题</label><input class="input" v-model="bmModal.form.title"></div>
+          <div class="form-group"><label>标签（逗号分隔）</label><input class="input" v-model="bmModal.form.tags" placeholder="如：固定资产,折旧"></div>
+          <div class="form-group"><label>科目</label><select class="input" v-model="bmModal.form.subject"><option value="">无</option><option value="会计">会计</option><option value="税法">税法</option><option value="经济法">经济法</option></select></div>
+          <div class="modal-actions">
+            <button class="btn btn-outline" @click="bmModal.show = false">取消</button>
+            <button class="btn btn-primary" @click="saveBookmark" :disabled="bmModal.saving">{{ bmModal.saving ? '保存中...' : '保存' }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ GLOBAL SEARCH OVERLAY ============ -->
+    <div v-if="searchOpen" class="search-overlay" @click.self="searchOpen = false">
+      <div class="search-box">
+        <div class="search-input-wrap">
+          <span class="icon">🔍</span>
+          <input ref="searchInput" v-model="searchQuery" @input="doSearch" @keydown="searchKeyNav" placeholder="搜索知识库、日记、闪卡、备忘..." autofocus>
+          <kbd>ESC</kbd>
+        </div>
+        <div class="search-results" v-if="searchQuery">
+          <div v-if="searching" class="search-empty">🔍 搜索中...</div>
+          <div v-else-if="searchResults.length === 0" class="search-empty">未找到 "{{ searchQuery }}"</div>
+          <template v-else>
+            <div v-for="(group, gIdx) in searchResults" :key="gIdx">
+              <div class="search-group">{{ group.type }}</div>
+              <div v-for="(item, iIdx) in group.items" :key="iIdx"
+                class="search-item"
+                :class="{ active: searchActiveGroup === gIdx && searchActiveIndex === iIdx }"
+                @click="navigateSearchResult(group, item)">
+                <span class="title">{{ item.title }}</span>
+                <span class="meta">{{ item.meta }}</span>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+
+    <!-- Keyboard shortcut hint -->
+    <div class="kbd-hint">⌘K 搜索 · ⌘1-9 切标签</div>
+
   </main>
 
   <!-- AI Chat FAB -->
@@ -873,8 +1307,12 @@ const app = createApp({
     // Loading states
     const loading = reactive({
       reviews: false, memos: false, recentDiary: false,
-      knowledge: false, diary: false, allMemos: false, trash: false
+      knowledge: false, diary: false, allMemos: false, trash: false, gallery: false,
+      flashcards: false, bookmarks: false, todaySRS: false
     });
+    const uploadingImages = ref(false);
+    const galleryItems = ref([]);
+    const previewImage = ref(null);
 
     // Data
     const stats = reactive({
@@ -887,6 +1325,60 @@ const app = createApp({
     const allDiary = ref([]);
     const allMemos = ref([]);
     const trashItems = ref([]);
+
+    // -- V3 New State --
+    // Flashcards
+    const allFlashcards = ref([]);
+    const fcFilter = reactive({ subject: '', search: '' });
+    const fcReviewMode = ref(false);
+    const fcReviewQueue = ref([]);
+    const fcReviewIndex = ref(0);
+    const fcFlipped = ref(false);
+    const fcGenerating = ref(false);
+    const fcModal = reactive({ show: false, saving: false, form: { subject: '', question: '', answer: '' } });
+    const todaySRSQueue = ref([]);
+    const srsDueCount = ref(0);
+
+    // Pomodoro
+    const pomoType = ref('focus');
+    const pomoRunning = ref(false);
+    const pomoSeconds = ref(25 * 60);
+    const pomoTotal = ref(25 * 60);
+    const pomoTimer = ref(null);
+    const pomoSubject = ref('');
+    const pomoTodayCount = ref(0);
+    const pomoTodayMinutes = ref(0);
+
+    // Bookmarks
+    const allBookmarks = ref([]);
+    const bmFilter = reactive({ subject: '', search: '' });
+    const bmModal = reactive({ show: false, saving: false, form: { url: '', title: '', tags: '', subject: '' } });
+
+    // Today View
+    const greetingText = computed(() => {
+      const h = new Date().getHours();
+      if (h < 6) return '夜深了';
+      if (h < 12) return '早上好';
+      if (h < 14) return '中午好';
+      if (h < 18) return '下午好';
+      return '晚上好';
+    });
+    const dailyGoal = ref(120);
+    const todayStudyMinutes = ref(0);
+    const streak = ref(0);
+
+    // Global Search
+    const searchOpen = ref(false);
+    const searchQuery = ref('');
+    const searching = ref(false);
+    const searchResults = ref([]);
+    const searchActiveGroup = ref(0);
+    const searchActiveIndex = ref(0);
+    const searchInput = ref(null);
+    let searchTimer = null;
+
+    // Export
+    const showExportMenu = ref(false);
 
     // -- Filters --
     const kbFilter = reactive({ subject: '', chapter: '', level: '', search: '' });
@@ -945,7 +1437,39 @@ const app = createApp({
       return data;
     });
 
-    const filteredMemos = computed(() => {
+    // -- V3 Computed --
+    const filteredFlashcards = computed(() => {
+      let data = allFlashcards.value;
+      if (fcFilter.subject) data = data.filter(f => f.subject === fcFilter.subject);
+      if (fcFilter.search) {
+        const q = fcFilter.search.toLowerCase();
+        data = data.filter(f => (f.question && f.question.toLowerCase().includes(q)) || (f.answer && f.answer.toLowerCase().includes(q)));
+      }
+      return data;
+    });
+    const fcStats = computed(() => {
+      const total = allFlashcards.value.length;
+      const mastered = allFlashcards.value.filter(f => f.ease_factor >= 2.5 && f.repetitions >= 2).length;
+      const due = allFlashcards.value.filter(f => !f.next_review_at || new Date(f.next_review_at) <= new Date()).length;
+      const today = new Date().toISOString().slice(0,10);
+      const reviewedToday = allFlashcards.value.filter(f => f.last_reviewed && f.last_reviewed.slice(0,10) === today).length;
+      return { total, mastered, due, reviewedToday };
+    });
+    const filteredBookmarks = computed(() => {
+      let data = allBookmarks.value;
+      if (bmFilter.subject) data = data.filter(b => b.subject === bmFilter.subject);
+      if (bmFilter.search) {
+        const q = bmFilter.search.toLowerCase();
+        data = data.filter(b => (b.title && b.title.toLowerCase().includes(q)) || (b.url && b.url.toLowerCase().includes(q)) || (b.tags && b.tags.some(t => t.toLowerCase().includes(q))));
+      }
+      return data;
+    });
+    const pomoDisplay = computed(() => {
+      const m = Math.floor(pomoSeconds.value / 60);
+      const s = pomoSeconds.value % 60;
+      return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    });
+    const pomoProgress = computed(() => 1 - (pomoSeconds.value / pomoTotal.value));
       let data = allMemos.value;
       if (memoFilter.status === 'pending') data = data.filter(m => !m.is_done);
       if (memoFilter.status === 'done') data = data.filter(m => m.is_done);
@@ -1105,23 +1629,95 @@ const app = createApp({
       fetchTrash(); fetchKnowledge(); fetchDiary(); fetchAllMemos(); fetchStats();
     };
 
-    const refreshDashboard    const refreshDashboard = async () => {
-      await Promise.all([fetchStats(), fetchTodayReviews(), fetchTodayMemos(), fetchRecentDiary()]);
+    // -- V3 Data Fetching --
+    const fetchFlashcards = async () => {
+      loading.flashcards = true;
+      const { data: fc, error } = await sb.from('flashcards').select('*').neq('is_deleted', true).order('created_at', { ascending: false });
+      if (!error && fc) {
+        // Join with latest review for each card
+        const { data: reviews } = await sb.from('flashcard_reviews').select('*').order('reviewed_at', { ascending: false }).limit(500);
+        const reviewMap = {};
+        if (reviews) reviews.forEach(r => { if (!reviewMap[r.flashcard_id]) reviewMap[r.flashcard_id] = r; });
+        allFlashcards.value = fc.map(f => ({ ...f, ...(reviewMap[f.id] || {}), last_reviewed: reviewMap[f.id]?.reviewed_at || null }));
+      }
+      loading.flashcards = false;
+      updateSRSStats();
+    };
+    const fetchTodaySRS = async () => {
+      loading.todaySRS = true;
+      const today = new Date().toISOString().slice(0, 10);
+      const { data } = await sb.from('flashcards').select('*').neq('is_deleted', true);
+      if (data) {
+        const { data: reviews } = await sb.from('flashcard_reviews').select('*').order('reviewed_at', { ascending: false }).limit(500);
+        const reviewMap = {};
+        if (reviews) reviews.forEach(r => { if (!reviewMap[r.flashcard_id]) reviewMap[r.flashcard_id] = r; });
+        const due = data.filter(f => {
+          const r = reviewMap[f.id];
+          return !r || !r.next_review_at || new Date(r.next_review_at) <= new Date();
+        });
+        todaySRSQueue.value = due.map(f => ({ ...f, ...(reviewMap[f.id] || {}) }));
+        srsDueCount.value = due.length;
+      }
+      loading.todaySRS = false;
+    };
+    const updateSRSStats = () => {
+      const due = allFlashcards.value.filter(f => !f.next_review_at || new Date(f.next_review_at) <= new Date()).length;
+      srsDueCount.value = due;
+    };
+    const fetchBookmarks = async () => {
+      loading.bookmarks = true;
+      const { data, error } = await sb.from('bookmarks').select('*').neq('is_deleted', true).order('created_at', { ascending: false });
+      if (!error) allBookmarks.value = data || [];
+      loading.bookmarks = false;
+    };
+    const fetchPomoToday = async () => {
+      const today = new Date().toISOString().slice(0, 10);
+      const { data } = await sb.from('study_sessions').select('*').eq('session_date', today);
+      if (data) {
+        pomoTodayCount.value = data.reduce((s, r) => s + (r.pomodoro_count || 0), 0);
+        pomoTodayMinutes.value = data.reduce((s, r) => s + (r.duration_minutes || 0), 0);
+      }
+    };
+    const fetchTodayStudyMinutes = async () => {
+      const today = new Date().toISOString().slice(0, 10);
+      const { data } = await sb.from('study_sessions').select('*').eq('session_date', today);
+      todayStudyMinutes.value = data ? data.reduce((s, r) => s + (r.duration_minutes || 0), 0) : 0;
+      // Also check study_diary for study_minutes
+      const { data: diary } = await sb.from('study_diary').select('study_minutes').eq('entry_date', today).neq('is_deleted', true);
+      if (diary) todayStudyMinutes.value += diary.reduce((s, d) => s + (d.study_minutes || 0), 0);
+    };
+    const fetchStreak = async () => {
+      const { data } = await sb.from('study_diary').select('entry_date').neq('is_deleted', true).order('entry_date', { ascending: false }).limit(100);
+      if (!data || data.length === 0) { streak.value = 0; return; }
+      const dates = [...new Set(data.map(d => d.entry_date))].sort().reverse();
+      let count = 0;
+      const today = new Date().toISOString().slice(0, 10);
+      const checkDate = dates[0] === today ? new Date(today) : new Date(new Date().getTime() - 86400000);
+      while (count < dates.length) {
+        const ds = checkDate.toISOString().slice(0, 10);
+        if (dates.includes(ds)) { count++; checkDate.setDate(checkDate.getDate() - 1); }
+        else break;
+      }
+      streak.value = count;
+    };
+
+    const refreshDashboard = async () => {
+      await Promise.all([fetchStats(), fetchTodayReviews(), fetchTodayMemos(), fetchRecentDiary(), fetchTodaySRS(), fetchStreak(), fetchPomoToday(), fetchTodayStudyMinutes()]);
       showToast('工作台已刷新', 'success');
     };
 
     // -- Memo CRUD --
     const memoModal = reactive({
       show: false, editingId: null, saving: false,
-      form: { content: '', memo_date: todayDateStr.value, priority: '' }
+      form: { content: '', memo_date: todayDateStr.value, priority: '', image_urls: [] }
     });
     const openMemoModal = (memo = null) => {
       if (memo) {
         memoModal.editingId = memo.id;
-        memoModal.form = { content: memo.content, memo_date: memo.memo_date, priority: memo.priority || '' };
+        memoModal.form = { content: memo.content, memo_date: memo.memo_date, priority: memo.priority || '', image_urls: memo.image_urls || [] };
       } else {
         memoModal.editingId = null;
-        memoModal.form = { content: '', memo_date: todayDateStr.value, priority: '' };
+        memoModal.form = { content: '', memo_date: todayDateStr.value, priority: '', image_urls: [] };
       }
       memoModal.show = true;
     };
@@ -1132,7 +1728,8 @@ const app = createApp({
         content: memoModal.form.content.trim(),
         memo_date: memoModal.form.memo_date,
         priority: memoModal.form.priority || null,
-        is_done: false
+        is_done: false,
+        image_urls: memoModal.form.image_urls || []
       };
       const { error } = await sb.from('daily_memos').insert(payload);
       memoModal.saving = false;
@@ -1158,15 +1755,15 @@ const app = createApp({
     // -- Diary CRUD --
     const diaryModal = reactive({
       show: false, saving: false,
-      form: { entry_date: todayDateStr.value, subject: '', chapter_name: '', oral_transcript: '', ai_summary: '', missing_points: '', mastery_score: null }
+      form: { entry_date: todayDateStr.value, subject: '', chapter_name: '', oral_transcript: '', ai_summary: '', missing_points: '', mastery_score: null, image_urls: [] }
     });
     const openDiaryModal = (diary = null) => {
       if (diary) {
         diaryModal.editingId = diary.id;
-        diaryModal.form = { entry_date: diary.entry_date, subject: diary.subject, chapter_name: diary.chapter_name || '', oral_transcript: diary.oral_transcript || '', ai_summary: diary.ai_summary || '', missing_points: diary.missing_points || '', mastery_score: diary.mastery_score || null };
+        diaryModal.form = { entry_date: diary.entry_date, subject: diary.subject, chapter_name: diary.chapter_name || '', oral_transcript: diary.oral_transcript || '', ai_summary: diary.ai_summary || '', missing_points: diary.missing_points || '', mastery_score: diary.mastery_score || null, image_urls: diary.image_urls || [] };
       } else {
         diaryModal.editingId = null;
-        diaryModal.form = { entry_date: todayDateStr.value, subject: '', chapter_name: '', oral_transcript: '', ai_summary: '', missing_points: '', mastery_score: null };
+        diaryModal.form = { entry_date: todayDateStr.value, subject: '', chapter_name: '', oral_transcript: '', ai_summary: '', missing_points: '', mastery_score: null, image_urls: [] };
       }
       diaryModal.show = true;
     };
@@ -1180,7 +1777,8 @@ const app = createApp({
         oral_transcript: diaryModal.form.oral_transcript || null,
         ai_summary: diaryModal.form.ai_summary || null,
         missing_points: diaryModal.form.missing_points || null,
-        mastery_score: diaryModal.form.mastery_score || null
+        mastery_score: diaryModal.form.mastery_score || null,
+        image_urls: diaryModal.form.image_urls || []
       };
       let error;
       if (diaryModal.editingId) {
@@ -1268,14 +1866,312 @@ const app = createApp({
       chatLoading.value = false;
     };
 
+    // -- Image upload --
+    const uploadImages = async (event, source) => {
+      const files = event.target.files;
+      if (!files.length) return;
+      uploadingImages.value = true;
+      const urls = [];
+      for (const file of files) {
+        try {
+          const ext = file.name.split('.').pop();
+          const path = 'public/' + Date.now() + '_' + Math.random().toString(36).slice(2,8) + '.' + ext;
+          const { error } = await sb.storage.from('images').upload(path, file, {
+            cacheControl: '3600',
+            upsert: false
+          });
+          if (error) { showToast('上传失败：' + error.message, 'error'); continue; }
+          const { data: urlData } = sb.storage.from('images').getPublicUrl(path);
+          urls.push(urlData.publicUrl);
+        } catch (e) {
+          showToast('上传失败：' + e.message, 'error');
+        }
+      }
+      if (source === 'memo') {
+        if (!memoModal.form.image_urls) memoModal.form.image_urls = [];
+        memoModal.form.image_urls.push(...urls);
+      } else {
+        if (!diaryModal.form.image_urls) diaryModal.form.image_urls = [];
+        diaryModal.form.image_urls.push(...urls);
+      }
+      uploadingImages.value = false;
+      event.target.value = '';
+      showToast('已上传 ' + urls.length + ' 张图片', 'success');
+    };
+
+    // -- Gallery --
+    const fetchGallery = async () => {
+      loading.gallery = true;
+      const items = [];
+      try {
+        const { data: memos } = await sb.from('daily_memos').select('id,memo_date,image_urls').not('image_urls','is',null).neq('is_deleted',true).order('memo_date',{ascending:false});
+        if (memos) {
+          memos.forEach(m => {
+            if (Array.isArray(m.image_urls)) m.image_urls.forEach(url => items.push({ url, source: 'memo', date: m.memo_date }));
+          });
+        }
+        const { data: diaries } = await sb.from('study_diary').select('id,entry_date,image_urls').not('image_urls','is',null).neq('is_deleted',true).order('entry_date',{ascending:false});
+        if (diaries) {
+          diaries.forEach(d => {
+            if (Array.isArray(d.image_urls)) d.image_urls.forEach(url => items.push({ url, source: 'diary', date: d.entry_date }));
+          });
+        }
+      } catch (e) {
+        console.log('Gallery:', e.message);
+      }
+      galleryItems.value = items;
+      loading.gallery = false;
+    };
+
+    // -- V3 Methods: Flashcards --
+    const openFcModal = () => {
+      fcModal.form = { subject: '', question: '', answer: '' };
+      fcModal.show = true;
+    };
+    const saveFlashcard = async () => {
+      if (!fcModal.form.question.trim() || !fcModal.form.answer.trim()) { showToast('请填写问题和答案', 'error'); return; }
+      fcModal.saving = true;
+      const { error } = await sb.from('flashcards').insert({
+        subject: fcModal.form.subject || null,
+        question: fcModal.form.question.trim(),
+        answer: fcModal.form.answer.trim(),
+        source_type: 'manual'
+      });
+      fcModal.saving = false;
+      if (error) { showToast('保存失败：' + error.message, 'error'); return; }
+      fcModal.show = false;
+      showToast('闪卡已创建 📇', 'success');
+      await fetchFlashcards();
+    };
+    const deleteFlashcard = async (id) => {
+      if (!confirm('确定删除这张闪卡吗？')) return;
+      await sb.from('flashcards').update({ is_deleted: true }).eq('id', id);
+      showToast('已删除', 'success');
+      await fetchFlashcards();
+    };
+    const generateFlashcardsFromKB = async () => {
+      fcGenerating.value = true;
+      const kb = allKnowledge.value.slice(0, 10);
+      let count = 0;
+      for (const k of kb) {
+        if (!k.content || k.content.length < 10) continue;
+        const q = `请简述：${k.topic_name}（${k.subject} 第${k.chapter_no}章）`;
+        const a = k.content.length > 300 ? k.content.slice(0, 300) + '...' : k.content;
+        const { error } = await sb.from('flashcards').insert({
+          knowledge_id: k.id, subject: k.subject,
+          question: q, answer: a, source_type: 'ai_generated'
+        });
+        if (!error) count++;
+      }
+      fcGenerating.value = false;
+      showToast(`已从知识库生成 ${count} 张闪卡`, 'success');
+      await fetchFlashcards();
+    };
+    const startSRSReview = () => {
+      fcReviewQueue.value = todaySRSQueue.value.length > 0 ? [...todaySRSQueue.value] : allFlashcards.value.filter(f => !f.next_review_at || new Date(f.next_review_at) <= new Date());
+      if (fcReviewQueue.value.length === 0) { showToast('没有待复习的闪卡 🎉', 'success'); return; }
+      fcReviewIndex.value = 0;
+      fcFlipped.value = false;
+      fcReviewMode.value = true;
+      switchView('flashcards');
+    };
+    const rateFlashcard = async (quality) => {
+      const fc = fcReviewQueue.value[fcReviewIndex.value];
+      if (!fc) return;
+      // SM-2 algorithm
+      let interval = fc.interval_days || 1;
+      let ease = fc.ease_factor || 2.5;
+      let reps = (fc.repetitions || 0) + 1;
+      if (quality >= 3) {
+        if (reps === 1) interval = 1;
+        else if (reps === 2) interval = 6;
+        else interval = Math.round(interval * ease);
+        ease = ease + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
+        if (ease < 1.3) ease = 1.3;
+      } else {
+        reps = 0;
+        interval = 1;
+      }
+      const nextReview = new Date();
+      nextReview.setDate(nextReview.getDate() + interval);
+      // Save review
+      await sb.from('flashcard_reviews').insert({
+        flashcard_id: fc.id || fc.flashcard_id,
+        quality, interval_days: interval, ease_factor: Math.round(ease * 100) / 100,
+        repetitions: reps, next_review_at: nextReview.toISOString()
+      });
+      // Next card
+      if (fcReviewIndex.value < fcReviewQueue.value.length - 1) {
+        fcReviewIndex.value++;
+        fcFlipped.value = false;
+      } else {
+        fcReviewMode.value = false;
+        showToast('🎉 复习完成！今日已复习 ' + fcReviewQueue.value.length + ' 张闪卡', 'success');
+        await fetchFlashcards();
+        await fetchTodaySRS();
+      }
+    };
+
+    // -- V3 Methods: Bookmarks --
+    const openBmModal = () => { bmModal.form = { url: '', title: '', tags: '', subject: '' }; bmModal.show = true; };
+    const saveBookmark = async () => {
+      if (!bmModal.form.url.trim()) { showToast('请输入URL', 'error'); return; }
+      bmModal.saving = true;
+      const tags = bmModal.form.tags ? bmModal.form.tags.split(',').map(s => s.trim()).filter(Boolean) : [];
+      const { error } = await sb.from('bookmarks').insert({
+        url: bmModal.form.url.trim(),
+        title: bmModal.form.title.trim() || bmModal.form.url.trim(),
+        tags, subject: bmModal.form.subject || null
+      });
+      bmModal.saving = false;
+      if (error) { showToast('保存失败：' + error.message, 'error'); return; }
+      bmModal.show = false;
+      showToast('收藏已添加 🔖', 'success');
+      await fetchBookmarks();
+    };
+    const deleteBookmark = async (id) => {
+      if (!confirm('确定删除吗？')) return;
+      await sb.from('bookmarks').update({ is_deleted: true }).eq('id', id);
+      showToast('已删除', 'success');
+      await fetchBookmarks();
+    };
+
+    // -- V3 Methods: Pomodoro --
+    const setPomoType = (type) => {
+      if (pomoRunning.value) return;
+      pomoType.value = type;
+      pomoSeconds.value = type === 'focus' ? 25 * 60 : 5 * 60;
+      pomoTotal.value = pomoSeconds.value;
+    };
+    const togglePomodoro = () => {
+      if (pomoRunning.value) {
+        clearInterval(pomoTimer.value);
+        pomoRunning.value = false;
+      } else {
+        pomoRunning.value = true;
+        pomoTimer.value = setInterval(async () => {
+          if (pomoSeconds.value <= 1) {
+            clearInterval(pomoTimer.value);
+            pomoRunning.value = false;
+            // Auto-log session
+            if (pomoType.value === 'focus') {
+              const today = new Date().toISOString().slice(0, 10);
+              await sb.from('study_sessions').insert({
+                session_date: today,
+                subject: pomoSubject.value || null,
+                duration_minutes: pomoTotal.value / 60,
+                pomodoro_count: 1
+              });
+              await fetchPomoToday(); await fetchTodayStudyMinutes();
+              showToast('🍅 番茄钟完成！', 'success');
+            } else {
+              showToast('☕ 休息结束，准备下一个番茄！', 'success');
+            }
+            pomoSeconds.value = pomoType.value === 'focus' ? 25 * 60 : 5 * 60;
+            pomoTotal.value = pomoSeconds.value;
+          } else {
+            pomoSeconds.value--;
+          }
+        }, 1000);
+      }
+    };
+    const resetPomodoro = () => {
+      clearInterval(pomoTimer.value);
+      pomoRunning.value = false;
+      pomoSeconds.value = pomoType.value === 'focus' ? 25 * 60 : 5 * 60;
+      pomoTotal.value = pomoSeconds.value;
+    };
+    const saveDailyGoal = () => { localStorage.setItem('saiclaws_daily_goal', dailyGoal.value); showToast('目标已保存', 'success'); };
+
+    // -- V3 Methods: Global Search --
+    const doSearch = () => {
+      if (searchTimer) clearTimeout(searchTimer);
+      if (!searchQuery.value.trim()) { searchResults.value = []; return; }
+      searchTimer = setTimeout(async () => {
+        searching.value = true;
+        const q = searchQuery.value.toLowerCase();
+        const results = [];
+        // Knowledge base
+        const kbMatch = allKnowledge.value.filter(k => (k.topic_name && k.topic_name.toLowerCase().includes(q)) || (k.content && k.content.toLowerCase().includes(q))).slice(0, 3);
+        if (kbMatch.length) results.push({ type: '📚 知识库', items: kbMatch.map(k => ({ title: k.topic_name, meta: k.subject, view: 'knowledge', id: k.id })) });
+        // Diary
+        const dMatch = allDiary.value.filter(d => (d.oral_transcript && d.oral_transcript.toLowerCase().includes(q)) || (d.ai_summary && d.ai_summary.toLowerCase().includes(q))).slice(0, 3);
+        if (dMatch.length) results.push({ type: '📝 学习日记', items: dMatch.map(d => ({ title: truncateText(d.oral_transcript || d.ai_summary, 50), meta: formatDate(d.entry_date), view: 'diary' })) });
+        // Flashcards
+        const fMatch = allFlashcards.value.filter(f => (f.question && f.question.toLowerCase().includes(q)) || (f.answer && f.answer.toLowerCase().includes(q))).slice(0, 3);
+        if (fMatch.length) results.push({ type: '📇 闪卡', items: fMatch.map(f => ({ title: truncateText(f.question, 50), meta: f.subject, view: 'flashcards' })) });
+        // Memos
+        const mMatch = allMemos.value.filter(m => m.content && m.content.toLowerCase().includes(q)).slice(0, 3);
+        if (mMatch.length) results.push({ type: '📋 备忘录', items: mMatch.map(m => ({ title: truncateText(m.content, 50), meta: formatDate(m.memo_date), view: 'memos' })) });
+        searchResults.value = results;
+        searchActiveGroup.value = 0;
+        searchActiveIndex.value = 0;
+        searching.value = false;
+      }, 250);
+    };
+    const searchKeyNav = (e) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const group = searchResults.value[searchActiveGroup.value];
+        if (group && searchActiveIndex.value < group.items.length - 1) searchActiveIndex.value++;
+        else if (searchActiveGroup.value < searchResults.value.length - 1) { searchActiveGroup.value++; searchActiveIndex.value = 0; }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (searchActiveIndex.value > 0) searchActiveIndex.value--;
+        else if (searchActiveGroup.value > 0) {
+          searchActiveGroup.value--;
+          searchActiveIndex.value = searchResults.value[searchActiveGroup.value].items.length - 1;
+        }
+      } else if (e.key === 'Enter') {
+        const group = searchResults.value[searchActiveGroup.value];
+        if (group && group.items[searchActiveIndex.value]) {
+          navigateSearchResult(group, group.items[searchActiveIndex.value]);
+        }
+      } else if (e.key === 'Escape') {
+        searchOpen.value = false;
+      }
+    };
+    const navigateSearchResult = (group, item) => {
+      searchOpen.value = false;
+      searchQuery.value = '';
+      if (item.view) switchView(item.view);
+    };
+
+    // -- V3 Methods: Export --
+    const exportJSON = () => {
+      const data = { knowledge_base: allKnowledge.value, study_diary: allDiary.value, memos: allMemos.value, flashcards: allFlashcards.value };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `saiclaws_backup_${new Date().toISOString().slice(0,10)}.json`;
+      a.click(); URL.revokeObjectURL(url);
+      showToast('数据已导出 ✅', 'success');
+    };
+    const exportMarkdown = () => {
+      let md = '# SAIClaws 知识库导出\n\n';
+      allKnowledge.value.forEach(k => {
+        md += `## ${k.topic_name}\n- **科目**: ${k.subject}\n- **章节**: 第${k.chapter_no}章 ${k.chapter_name}\n- **大纲等级**: ${k.syllabus_level}\n${k.content ? '\n' + k.content + '\n' : ''}\n${k.key_points ? '\n**重点**: ' + (Array.isArray(k.key_points) ? k.key_points.join(', ') : k.key_points) + '\n' : ''}\n---\n\n`;
+      });
+      const blob = new Blob([md], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `saiclaws_export_${new Date().toISOString().slice(0,10)}.md`;
+      a.click(); URL.revokeObjectURL(url);
+      showToast('Markdown已导出 ✅', 'success');
+    };
+
     // -- View switching --
     const viewDataLoaders = {
       dashboard: refreshDashboard,
       knowledge: fetchKnowledge,
       diary: fetchDiary,
-      memos: fetchAllMemos, trash: fetchTrash
+      memos: fetchAllMemos, trash: fetchTrash, gallery: fetchGallery,
+      today: async () => { await Promise.all([fetchTodaySRS(), fetchTodayMemos(), fetchStreak(), fetchPomoToday(), fetchTodayStudyMinutes()]); },
+      flashcards: fetchFlashcards,
+      pomodoro: fetchPomoToday,
+      bookmarks: fetchBookmarks
     };
-    const loadedViews = reactive({ dashboard: false, knowledge: false, diary: false, memos: false, trash: false });
+    const loadedViews = reactive({ dashboard: false, knowledge: false, diary: false, memos: false, trash: false, gallery: false, today: false, flashcards: false, pomodoro: false, bookmarks: false });
     const switchView = async (view) => {
       currentView.value = view;
       if (!loadedViews[view] && viewDataLoaders[view]) {
@@ -1284,10 +2180,28 @@ const app = createApp({
       }
     };
 
+    // -- Keyboard shortcuts --
+    const handleKeydown = (e) => {
+      const mod = e.metaKey || e.ctrlKey;
+      if (mod && e.key === 'k') { e.preventDefault(); searchOpen.value = !searchOpen.value; }
+      if (searchOpen.value) return;
+      if (mod && e.key === '1') { e.preventDefault(); switchView('dashboard'); }
+      if (mod && e.key === '2') { e.preventDefault(); switchView('today'); }
+      if (mod && e.key === '3') { e.preventDefault(); switchView('flashcards'); }
+      if (mod && e.key === '4') { e.preventDefault(); switchView('knowledge'); }
+      if (mod && e.key === '5') { e.preventDefault(); switchView('diary'); }
+      if (mod && e.key === '6') { e.preventDefault(); switchView('memos'); }
+      if (mod && e.key === '7') { e.preventDefault(); switchView('pomodoro'); }
+      if (mod && e.key === '8') { e.preventDefault(); switchView('bookmarks'); }
+      if (e.key === 'Escape' && searchOpen.value) { searchOpen.value = false; }
+    };
+
     // -- Init --
     onMounted(async () => {
       await refreshDashboard();
       loadedViews.dashboard = true;
+      dailyGoal.value = parseInt(localStorage.getItem('saiclaws_daily_goal')) || 120;
+      window.addEventListener('keydown', handleKeydown);
     });
 
     // Return everything to template
@@ -1305,7 +2219,18 @@ const app = createApp({
       diaryModal, openDiaryModal, saveDiary, deleteDiary,
       kbModal, openKbModal, saveKnowledge, deleteKnowledge,
       sendChat,
-      switchView, refreshDashboard, fetchTrash, restoreItem
+      switchView, refreshDashboard, fetchTrash, restoreItem,
+      galleryItems, previewImage, uploadingImages, uploadImages, fetchGallery,
+      // V3 exports
+      greetingText, dailyGoal, todayStudyMinutes, streak, saveDailyGoal,
+      todaySRSQueue, srsDueCount, fetchTodaySRS,
+      allFlashcards, fcFilter, filteredFlashcards, fcStats, fcReviewMode, fcReviewQueue, fcReviewIndex, fcFlipped, fcGenerating,
+      fcModal, openFcModal, saveFlashcard, deleteFlashcard, generateFlashcardsFromKB, startSRSReview, rateFlashcard,
+      pomoType, pomoRunning, pomoSeconds, pomoTotal, pomoDisplay, pomoProgress, pomoSubject, pomoTodayCount, pomoTodayMinutes,
+      setPomoType, togglePomodoro, resetPomodoro,
+      allBookmarks, bmFilter, filteredBookmarks, bmModal, openBmModal, saveBookmark, deleteBookmark,
+      searchOpen, searchQuery, searching, searchResults, searchActiveGroup, searchActiveIndex, searchInput, doSearch, searchKeyNav, navigateSearchResult,
+      showExportMenu, exportJSON, exportMarkdown
     };
   }
 });
