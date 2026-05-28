@@ -1091,8 +1091,10 @@ select.input { cursor:pointer; }
           <kbd>ESC</kbd>
         </div>
         <div class="search-results" v-if="searchQuery">
-          <div v-if="searching" class="search-empty">🔍 搜索中...</div>
-          <div v-else-if="searchResults.length === 0" class="search-empty">未找到 "{{ searchQuery }}"</div>
+          <div v-if="searching" class="search-loading">🔍 搜索中...</div>
+          <div v-else-if="!searchResults.length" class="search-empty">
+            未找到 "<span v-text="searchQuery"></span>"
+          </div>
           <template v-else>
             <div v-for="(group, gIdx) in searchResults" :key="gIdx">
               <div class="search-group">{{ group.type }}</div>
@@ -2089,6 +2091,11 @@ const app = createApp({
       if (!searchQuery.value.trim()) { searchResults.value = []; return; }
       searchTimer = setTimeout(async () => {
         searching.value = true;
+        // Preload data if not yet loaded
+        if (allKnowledge.value.length === 0) { try { await fetchKnowledge(); loadedViews.knowledge = true; } catch(e){} }
+        if (allDiary.value.length === 0) { try { await fetchDiary(); loadedViews.diary = true; } catch(e){} }
+        if (allFlashcards.value.length === 0) { try { await fetchFlashcards(); loadedViews.flashcards = true; } catch(e){} }
+        if (allMemos.value.length === 0) { try { await fetchAllMemos(); loadedViews.memos = true; } catch(e){} }
         const q = searchQuery.value.toLowerCase();
         const results = [];
         // Knowledge base
