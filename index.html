@@ -1092,9 +1092,7 @@ select.input { cursor:pointer; }
         </div>
         <div class="search-results" v-if="searchQuery">
           <div v-if="searching" class="search-loading">🔍 搜索中...</div>
-          <div v-else-if="!searchResults.length" class="search-empty">
-            未找到 "<span v-text="searchQuery"></span>"
-          </div>
+          <div v-else-if="!searchResults.length" class="search-empty">未找到相关结果，试试其他关键词</div>
           <template v-else>
             <div v-for="(group, gIdx) in searchResults" :key="gIdx">
               <div class="search-group">{{ group.type }}</div>
@@ -2191,6 +2189,7 @@ const app = createApp({
     const handleKeydown = (e) => {
       const mod = e.metaKey || e.ctrlKey;
       if (mod && e.key === 'k') { e.preventDefault(); searchOpen.value = !searchOpen.value; }
+      if (e.key === 'Escape') { searchOpen.value = false; return; }
       if (searchOpen.value) return;
       if (mod && e.key === '1') { e.preventDefault(); switchView('dashboard'); }
       if (mod && e.key === '2') { e.preventDefault(); switchView('today'); }
@@ -2200,7 +2199,6 @@ const app = createApp({
       if (mod && e.key === '6') { e.preventDefault(); switchView('memos'); }
       if (mod && e.key === '7') { e.preventDefault(); switchView('pomodoro'); }
       if (mod && e.key === '8') { e.preventDefault(); switchView('bookmarks'); }
-      if (e.key === 'Escape' && searchOpen.value) { searchOpen.value = false; }
     };
 
     // -- Init --
